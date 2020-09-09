@@ -2135,7 +2135,14 @@ if (skia_enable_tools) {
 
   if (skia_use_ffmpeg) {
     test_app("MovieRenderer") {
-        sources = ["tools/movie_renderer/MovieRenderer.cpp"]
+      sources = ["tools/movie_renderer/MovieRenderer.cpp"]
+      deps = [
+        ":flags",
+        ":skia",
+        "experimental/ffmpeg:video_encoder",
+        "modules/skottie",
+        "modules/skottie:utils",
+      ]
     }
   }
 
