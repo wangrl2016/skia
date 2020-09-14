@@ -16,6 +16,7 @@
 #include "tools/gpu/GrContextFactory.h"
 
 #include "include/gpu/GrContextOptions.h"
+#include "src/entt/entt.hpp"
 
 static DEFINE_string2(input, i, "", "skottie animation to render");
 static DEFINE_string2(output, o, "", "mp4 file to create");

@@ -2129,6 +2129,7 @@ if (skia_enable_tools) {
         "experimental/ffmpeg:video_encoder",
         "modules/skottie",
         "modules/skottie:utils",
+        "//third_party/entt",
       ]
     }
   }

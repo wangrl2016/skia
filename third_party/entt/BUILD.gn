@@ -1,0 +1,7 @@
+import("../third_party.gni")
+
+third_party("entt") {
+    public_include_dirs = [
+        "../externals/entt",
+    ]
+}

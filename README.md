@@ -6,13 +6,7 @@ SVG2渲染库
 
 https://www.w3.org/TR/SVG2/
 
-> 生成CMake编译文件
-
-```
-bin/gn gen out/config --ide=json --json-ide-script=../../gn/gn_to_cmake.py
-```
-
-> 编译Skia仓库
+#### 编译Skia仓库
 
 配置编译工具
 
@@ -53,7 +47,13 @@ or
 ./out/default/editor resources/text/english.txt
 ```
 
-> 同步google远程仓库
+生成CMake编译文件
+
+```
+bin/gn gen out/config --ide=json --json-ide-script=../../gn/gn_to_cmake.py
+```
+
+#### 同步google远程仓库
 
 查看配置的远程仓库
 
