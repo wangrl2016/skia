@@ -2138,6 +2138,7 @@ if (skia_enable_tools) {
       sources = ["tools/movie_renderer/MovieRenderer.cpp"]
       deps = [
         ":flags",
+        ":gpu_tool_utils",
         ":skia",
         "experimental/ffmpeg:video_encoder",
         "modules/skottie",
