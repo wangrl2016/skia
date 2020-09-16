@@ -2135,8 +2135,8 @@ if (skia_enable_tools) {
   }
 
   if (skia_use_ffmpeg) {
-    test_app("MovieRenderer") {
-      sources = ["tools/movie_renderer/MovieRenderer.cpp"]
+    test_app("Render") {
+      sources = ["tools/render/MainRender.cpp"]
       deps = [
         ":flags",
         ":gpu_tool_utils",
