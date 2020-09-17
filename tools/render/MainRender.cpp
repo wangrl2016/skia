@@ -17,6 +17,7 @@
 
 #include "include/gpu/GrContextOptions.h"
 #include "src/entt/entt.hpp"
+#include "tools/render/AnimationComponent.h"
 
 static DEFINE_string2(input, i, "", "skottie animation to render");
 static DEFINE_string2(output, o, "", "mp4 file to create");
@@ -87,6 +88,11 @@ int main(int argc, char** argv) {
         SkDebugf("Size %dx%d duration %g, fps %d, frame_duration %g\n",
                  dim.width(), dim.height(), duration, fps, frame_duration);
     }
+
+    entt::registry registry;
+    auto entity = registry.create();
+
+    registry.emplace<render::AnimationComponent>(entity, std::shared_ptr<skottie::Animation>(animation.get()));
 
     SkVideoEncoder encoder;
 
