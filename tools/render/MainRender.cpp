@@ -92,7 +92,14 @@ int main(int argc, char** argv) {
     entt::registry registry;
     auto entity = registry.create();
 
-    registry.emplace<render::AnimationComponent>(entity, std::shared_ptr<skottie::Animation>(animation.get()));
+    registry.emplace<render::AnimationComponent>(entity,
+            std::shared_ptr<skottie::Animation>(animation.get()));
+
+    auto view = registry.view<render::AnimationComponent>();
+    for (auto entity : view) {
+        auto& animation = view.get<render::AnimationComponent>(entity);
+        SkDebugf("Animation duration %ds\n", animation.getAnimation()->duration());
+    }
 
     SkVideoEncoder encoder;
 

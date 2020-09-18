@@ -9,6 +9,10 @@ namespace render {
     public:
         AnimationComponent(std::shared_ptr<skottie::Animation> animation) : mAnimation(animation) {}
 
+        std::shared_ptr<skottie::Animation> getAnimation() {
+            return mAnimation;
+        }
+
     private:
         std::shared_ptr<skottie::Animation> mAnimation;
     };
