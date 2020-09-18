@@ -17,7 +17,10 @@
 
 #include "include/gpu/GrContextOptions.h"
 #include "src/entt/entt.hpp"
+#include "tools/render/Engine.h"
 #include "tools/render/AnimationComponent.h"
+#include "tools/render/RenderComponent.h"
+#include "tools/render/RenderSystem.h"
 
 static DEFINE_string2(input, i, "", "skottie animation to render");
 static DEFINE_string2(output, o, "", "mp4 file to create");
@@ -94,12 +97,27 @@ int main(int argc, char** argv) {
 
     registry.emplace<render::AnimationComponent>(entity,
             std::shared_ptr<skottie::Animation>(animation.get()));
+    registry.emplace<render::RenderComponent>(entity);
 
-    auto view = registry.view<render::AnimationComponent>();
+    auto view = registry.view<render::AnimationComponent,
+                        render::RenderComponent>();
     for (auto entity : view) {
         auto& animation = view.get<render::AnimationComponent>(entity);
         SkDebugf("Animation duration %ds\n", animation.getAnimation()->duration());
     }
+
+    auto& engine = render::Engine::instance();
+
+    // 引擎初始化
+    engine.init();
+
+    // 如果没有停止就继续更新
+    while (!render::AnimationComponent::finished()) {
+        engine.update();
+    }
+
+    // 引擎销毁
+    engine.destroy();
 
     SkVideoEncoder encoder;
 

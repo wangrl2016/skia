@@ -6,6 +6,10 @@
 
 namespace render {
     struct AnimationComponent {
+        enum State {
+            IDLE, START, STOP
+        };
+
     public:
         AnimationComponent(std::shared_ptr<skottie::Animation> animation) : mAnimation(animation) {}
 
@@ -13,7 +17,21 @@ namespace render {
             return mAnimation;
         }
 
+        State getRenderState() {
+            return mState;
+        }
+
+        static bool finished() {
+            const auto view = Engine::registry().view<AnimationComponent>();
+            return !view.empty() &&
+                   std::all_of(view.begin(), view.end(), [view](auto e) {
+                       return view.get(e).getRenderState() == AnimationComponent::State::STOP;
+                   });
+        }
+
     private:
         std::shared_ptr<skottie::Animation> mAnimation;
+
+        State mState = State::IDLE;
     };
 }
