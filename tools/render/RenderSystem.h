@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "System.h"
+#include "modules/skottie/include/Skottie.h"
+#include "tools/render/System.h"
 
 namespace render {
 
@@ -18,6 +19,9 @@ namespace render {
 
     private:
 
+        bool handleFrame(skottie::Animation* animation) const;
+
+        void renderFrame(skottie::Animation* animation, SkCanvas* canvas) const;
     };
 
 }

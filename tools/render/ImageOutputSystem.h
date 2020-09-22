@@ -1,5 +1,5 @@
 //
-// Created by wangrl on 2020/9/18.
+// Created by wangrl on 2020/9/21.
 //
 
 #pragma once
@@ -7,18 +7,12 @@
 #include "tools/render/System.h"
 
 namespace render {
-
-    class VideoGenerateSystem : public System {
+    class ImageOutputSystem : public System {
     public:
-
-        VideoGenerateSystem() = default;
-
         void init() override;
 
         void update() override;
 
         void finalize() override;
     };
-
 }
-

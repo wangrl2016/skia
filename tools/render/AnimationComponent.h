@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "modules/skottie/include/Skottie.h"
+
 namespace render {
     struct AnimationComponent {
         enum State {
@@ -11,9 +13,9 @@ namespace render {
         };
 
     public:
-        AnimationComponent(std::shared_ptr<skottie::Animation> animation) : mAnimation(animation) {}
+        AnimationComponent(sk_sp<skottie::Animation> animation) : mAnimation(animation) {}
 
-        std::shared_ptr<skottie::Animation> getAnimation() {
+        sk_sp<skottie::Animation> getAnimation() {
             return mAnimation;
         }
 
@@ -29,8 +31,13 @@ namespace render {
                    });
         }
 
-    private:
-        std::shared_ptr<skottie::Animation> mAnimation;
+        int mFps;   // 用户设置的帧率
+
+        float mAdvance;   // 每次前进的时间距离
+
+        float mTimeOffset = 0;
+
+        sk_sp<skottie::Animation> mAnimation;
 
         State mState = State::IDLE;
     };

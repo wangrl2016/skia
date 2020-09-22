@@ -6,12 +6,16 @@
 #include "tools/render/Engine.h"
 #include "tools/render/RenderSystem.h"
 #include "tools/render/VideoGenerateSystem.h"
+#include "tools/render/ImageOutputSystem.h"
 
 namespace render {
     void Engine::init() {
         reset();
 
         mSystems.emplace_back(new RenderSystem);
+        mSystems.emplace_back(new ImageOutputSystem);
+        // 增加图像输出测试系统
+        mSystems.emplace_back(new VideoGenerateSystem);
 
         for (auto& sys : systems()) {
             sys->init();
@@ -23,7 +27,9 @@ namespace render {
     }
 
     void Engine::update() {
-        printf("Engine update\n");
+        for (auto& sys : systems()) {
+            sys->update();
+        }
     }
 
     bool Engine::destroy() {

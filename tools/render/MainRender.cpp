@@ -20,6 +20,7 @@
 #include "tools/render/Engine.h"
 #include "tools/render/AnimationComponent.h"
 #include "tools/render/RenderComponent.h"
+#include "tools/render/FFmpegComponent.h"
 #include "tools/render/RenderSystem.h"
 
 static DEFINE_string2(input, i, "", "skottie animation to render");
@@ -31,11 +32,11 @@ static DEFINE_bool2(loop, l, false, "loop mode for profiling");
 static DEFINE_int(set_dst_width, 0, "set destination width (height will be computed)");
 static DEFINE_bool2(gpu, g, false, "use GPU for rendering");
 
-static void produce_frame(SkSurface* surf, skottie::Animation* anim, double frame) {
-    anim->seekFrame(frame);
-    surf->getCanvas()->clear(SK_ColorWHITE);
-    anim->render(surf->getCanvas());
-}
+//static void produce_frame(SkSurface* surf, skottie::Animation* anim, double frame) {
+//    anim->seekFrame(frame);
+//    surf->getCanvas()->clear(SK_ColorWHITE);
+//    anim->render(surf->getCanvas());
+//}
 
 struct AsyncRec {
     SkImageInfo info;
@@ -53,9 +54,9 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    auto contextType = sk_gpu_test::GrContextFactory::kGL_ContextType;
-    GrContextOptions grCtxOptions;
-    sk_gpu_test::GrContextFactory factory(grCtxOptions);
+//    auto contextType = sk_gpu_test::GrContextFactory::kGL_ContextType;
+//    GrContextOptions grCtxOptions;
+//    sk_gpu_test::GrContextFactory factory(grCtxOptions);
 
     SkString assetPath;
     if (FLAGS_assetPath.count() > 0) {
@@ -92,21 +93,20 @@ int main(int argc, char** argv) {
                  dim.width(), dim.height(), duration, fps, frame_duration);
     }
 
-    entt::registry registry;
+    auto& engine = render::Engine::instance();
+    auto& registry = engine.registry();
     auto entity = registry.create();
-
-    registry.emplace<render::AnimationComponent>(entity,
-            std::shared_ptr<skottie::Animation>(animation.get()));
+    registry.emplace<render::AnimationComponent>(entity, animation);
     registry.emplace<render::RenderComponent>(entity);
+    registry.emplace<render::FFmpegComponent>(entity);
 
     auto view = registry.view<render::AnimationComponent,
-                        render::RenderComponent>();
+            render::RenderComponent>();
     for (auto entity : view) {
         auto& animation = view.get<render::AnimationComponent>(entity);
-        SkDebugf("Animation duration %ds\n", animation.getAnimation()->duration());
+        animation.mFps = fps;
+        SkDebugf("Animation duration %lfs\n", animation.getAnimation()->duration());
     }
-
-    auto& engine = render::Engine::instance();
 
     // 引擎初始化
     engine.init();
@@ -116,91 +116,93 @@ int main(int argc, char** argv) {
         engine.update();
     }
 
+    printf("destory\n");
+
     // 引擎销毁
     engine.destroy();
 
-    SkVideoEncoder encoder;
-
-    GrContext* context = nullptr;
-    sk_sp<SkSurface> surf;
-    sk_sp<SkData> data;
-
-    const auto info = SkImageInfo::MakeN32Premul(dim);
-    do {
-        double loop_start = SkTime::GetSecs();
-
-        if (!encoder.beginRecording(dim, fps)) {
-            SkDEBUGF("Invalid video stream configuration.\n");
-            return -1;
-        }
-
-        // lazily allocate the surfaces
-        if (!surf) {
-            if (FLAGS_gpu) {
-                context = factory.getContextInfo(contextType).directContext();
-                surf = SkSurface::MakeRenderTarget(context,
-                                                   SkBudgeted::kNo,
-                                                   info,
-                                                   0,
-                                                   GrSurfaceOrigin::kTopLeft_GrSurfaceOrigin,
-                                                   nullptr);
-                if (!surf) {
-                    context = nullptr;
-                }
-            }
-            if (!surf) {
-                surf = SkSurface::MakeRaster(info);
-            }
-            surf->getCanvas()->scale(scale, scale);
-        }
-
-        for (int i = 0; i <= frames; ++i) {
-            const double frame = i * fps_scale;
-            if (FLAGS_verbose) {
-                SkDebugf("rendering frame %g\n", frame);
-            }
-
-            produce_frame(surf.get(), animation.get(), frame);
-
-            AsyncRec asyncRec = { info, &encoder };
-            if (context) {
-                auto read_pixels_cb = [](SkSurface::ReadPixelsContext ctx,
-                                         std::unique_ptr<const SkSurface::AsyncReadResult> result) {
-                    if (result && result->count() == 1) {
-                        AsyncRec* rec = reinterpret_cast<AsyncRec*>(ctx);
-                        rec->encoder->addFrame({rec->info, result->data(0), result->rowBytes(0)});
-                    }
-                };
-                surf->asyncRescaleAndReadPixels(info, {0, 0, info.width(), info.height()},
-                                                SkSurface::RescaleGamma::kSrc,
-                                                kNone_SkFilterQuality,
-                                                read_pixels_cb, &asyncRec);
-                surf->getContext()->submit();
-            } else {
-                SkPixmap pm;
-                SkAssertResult(surf->peekPixels(&pm));
-                encoder.addFrame(pm);
-            }
-        }
-        data = encoder.endRecording();
-
-        if (FLAGS_loop) {
-            double loop_dur = SkTime::GetSecs() - loop_start;
-            SkDebugf("recording secs %g, frames %d, recording fps %d\n",
-                     loop_dur, frames, (int)(frames / loop_dur));
-        }
-    } while (FLAGS_loop);
-
-    if (FLAGS_output.count() == 0) {
-        SkDebugf("missing -o output_file.mp4 argument\n");
-        return 0;
-    }
-
-    SkFILEWStream ostream(FLAGS_output[0]);
-    if (!ostream.isValid()) {
-        SkDebugf("Can't create output file %s\n", FLAGS_output[0]);
-        return -1;
-    }
-    ostream.write(data->data(), data->size());
+//    SkVideoEncoder encoder;
+//
+//    GrContext* context = nullptr;
+//    sk_sp<SkSurface> surf;
+//    sk_sp<SkData> data;
+//
+//    const auto info = SkImageInfo::MakeN32Premul(dim);
+//    do {
+//        double loop_start = SkTime::GetSecs();
+//
+//        if (!encoder.beginRecording(dim, fps)) {
+//            SkDEBUGF("Invalid video stream configuration.\n");
+//            return -1;
+//        }
+//
+//        // lazily allocate the surfaces
+//        if (!surf) {
+//            if (FLAGS_gpu) {
+//                context = factory.getContextInfo(contextType).directContext();
+//                surf = SkSurface::MakeRenderTarget(context,
+//                                                   SkBudgeted::kNo,
+//                                                   info,
+//                                                   0,
+//                                                   GrSurfaceOrigin::kTopLeft_GrSurfaceOrigin,
+//                                                   nullptr);
+//                if (!surf) {
+//                    context = nullptr;
+//                }
+//            }
+//            if (!surf) {
+//                surf = SkSurface::MakeRaster(info);
+//            }
+//            surf->getCanvas()->scale(scale, scale);
+//        }
+//
+//        for (int i = 0; i <= frames; ++i) {
+//            const double frame = i * fps_scale;
+//            if (FLAGS_verbose) {
+//                SkDebugf("rendering frame %g\n", frame);
+//            }
+//
+//            produce_frame(surf.get(), animation.get(), frame);
+//
+//            AsyncRec asyncRec = { info, &encoder };
+//            if (context) {
+//                auto read_pixels_cb = [](SkSurface::ReadPixelsContext ctx,
+//                                         std::unique_ptr<const SkSurface::AsyncReadResult> result) {
+//                    if (result && result->count() == 1) {
+//                        AsyncRec* rec = reinterpret_cast<AsyncRec*>(ctx);
+//                        rec->encoder->addFrame({rec->info, result->data(0), result->rowBytes(0)});
+//                    }
+//                };
+//                surf->asyncRescaleAndReadPixels(info, {0, 0, info.width(), info.height()},
+//                                                SkSurface::RescaleGamma::kSrc,
+//                                                kNone_SkFilterQuality,
+//                                                read_pixels_cb, &asyncRec);
+//                surf->getContext()->submit();
+//            } else {
+//                SkPixmap pm;
+//                SkAssertResult(surf->peekPixels(&pm));
+//                encoder.addFrame(pm);
+//            }
+//        }
+//        data = encoder.endRecording();
+//
+//        if (FLAGS_loop) {
+//            double loop_dur = SkTime::GetSecs() - loop_start;
+//            SkDebugf("recording secs %g, frames %d, recording fps %d\n",
+//                     loop_dur, frames, (int)(frames / loop_dur));
+//        }
+//    } while (FLAGS_loop);
+//
+//    if (FLAGS_output.count() == 0) {
+//        SkDebugf("missing -o output_file.mp4 argument\n");
+//        return 0;
+//    }
+//
+//    SkFILEWStream ostream(FLAGS_output[0]);
+//    if (!ostream.isValid()) {
+//        SkDebugf("Can't create output file %s\n", FLAGS_output[0]);
+//        return -1;
+//    }
+//    ostream.write(data->data(), data->size());
     return 0;
 }

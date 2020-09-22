@@ -2141,6 +2141,7 @@ if (skia_enable_tools) {
         "tools/render/RenderSystem.cpp",
         "tools/render/Engine.cpp",
         "tools/render/VideoGenerateSystem.cpp",
+        "tools/render/ImageOutputSystem.cpp",
       ]
       deps = [
         ":flags",

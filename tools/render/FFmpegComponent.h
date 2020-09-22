@@ -4,4 +4,8 @@
 
 #pragma once
 
+namespace render {
+    struct FFmpegComponent {
 
+    };
+}
