@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "tools/render/OutputConfig.h"
+#include "tools/render/OutputConfigComponent.h"
 
 namespace render {
     struct FFmpeg {

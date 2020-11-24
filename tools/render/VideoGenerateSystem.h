@@ -6,7 +6,7 @@
 
 #include "tools/render/System.h"
 #include "tools/render/FFmpegContext.h"
-#include "tools/render/OutputConfig.h"
+#include "tools/render/OutputConfigComponent.h"
 
 namespace render {
 
@@ -30,7 +30,7 @@ namespace render {
         /// @param config               Output config
         /// @return true when success
         ///
-        static bool initFFmpegContext(FFmpegContext* context, OutputConfig& config);
+        static bool initFFmpegContext(FFmpegContext* context, OutputConfigComponent& config);
 
         /// use input media file to init FFmpeg input configure, it will init AVFormatContext and
         /// AVCodecContext, any error will return.

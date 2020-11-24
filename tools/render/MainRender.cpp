@@ -16,6 +16,7 @@
 #include "tools/render/AnimationComponent.h"
 #include "tools/render/RenderComponent.h"
 #include "tools/render/FFmpegComponent.h"
+#include "tools/render/OutputConfigComponent.h"
 
 static DEFINE_string2(input, i, "", "skottie animation to render");
 static DEFINE_string2(output, o, "", "mp4 file to create");
@@ -70,13 +71,14 @@ int main(int argc, char** argv) {
     registry.emplace<render::AnimationComponent>(entity, animation);
     registry.emplace<render::RenderComponent>(entity);
     registry.emplace<render::FFmpegComponent>(entity);
+    registry.emplace<render::OutputConfigComponent>(entity);
 
     auto view = registry.view<render::AnimationComponent,
             render::RenderComponent>();
     for (auto entity : view) {
-        auto& animation = view.get<render::AnimationComponent>(entity);
-        animation.mFps = fps;
-        SkDebugf("Animation duration %lfs\n", animation.getAnimation()->duration());
+        auto& anim = view.get<render::AnimationComponent>(entity);
+        anim.mFps = fps;
+        SkDebugf("Animation duration %lfs\n", anim.getAnimation()->duration());
     }
 
     // 引擎初始化

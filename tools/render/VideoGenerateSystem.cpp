@@ -2,8 +2,6 @@
 // Created by wangrl on 2020/9/18.
 //
 
-using namespace std;
-
 #include <stdint.h>
 #include <include/core/SkImage.h>
 #include <include/core/SkImageInfo.h>
@@ -18,11 +16,10 @@ extern "C" {
 
 #include "tools/render/AudioFifo.h"
 #include "tools/render/Engine.h"
-#include "tools/render/OutputConfig.h"
+#include "tools/render/OutputConfigComponent.h"
 #include "tools/render/FFmpegContext.h"
-#include "tools/render/ImageOutput.h"
+#include "tools/render/RenderComponent.h"
 #include "tools/render/AnimationComponent.h"
-#include "tools/render/EngineUtils.h"
 #include "tools/render/VideoGenerateSystem.h"
 
 
@@ -36,7 +33,7 @@ namespace render {
         auto& r = Engine::registry();
 
         // Skip if there were any errors when loading animation.
-        auto componentsView = r.view<AnimationComponent, OutputConfig, FFmpegContext, ImageOutput>();
+        auto componentsView = r.view<AnimationComponent, OutputConfigComponent, FFmpegContext, RenderComponent>();
         for (auto e: componentsView) {
             auto& res = componentsView.get<AnimationComponent>(e);
             if (res.mState == AnimationComponent::State::STOP ||
@@ -45,15 +42,15 @@ namespace render {
             }
 
             auto& context = componentsView.get<FFmpegContext>(e);
-            auto& config = componentsView.get<OutputConfig>(e);
+            auto& config = componentsView.get<OutputConfigComponent>(e);
             if (!context.isInited)
                 context.isInited = initFFmpegContext(&context, config);
 
-            sk_sp<SkImage> image = componentsView.get<ImageOutput>(e).skImage;
+            sk_sp<SkImage> image = componentsView.get<RenderComponent>(e).mImage;
 
             SkColorType colorType = image->colorType();
             // pixel encode format
-            AVPixelFormat avPixelFormat = AV_PIX_FMT_BGRA;
+            AVPixelFormat avPixelFormat;
             switch (colorType) {
                 case kBGRA_8888_SkColorType:
                     avPixelFormat = AV_PIX_FMT_BGRA;
@@ -132,7 +129,7 @@ namespace render {
         // av_write_trailer() may try to use memory that was freed on
         // av_codec_close().
         auto& r = Engine::registry();
-        auto componentsView = r.view<AnimationComponent, FFmpegContext, ImageOutput>();
+        auto componentsView = r.view<AnimationComponent, FFmpegContext, RenderComponent>();
 
         for (auto e : componentsView) {
             auto& res = componentsView.get<AnimationComponent>(e);
@@ -145,7 +142,7 @@ namespace render {
             // Because the user may delete our file immediately, cause our writing core dump.
             // When buffer is flushed the cycle will break.
             int ret;
-            AVPacket pkt = {nullptr};
+            AVPacket pkt;
             do {
                 // When the frame parameter is null the buffer will be flushed.
                 // General buffer flushing at end of stream.
@@ -185,7 +182,7 @@ namespace render {
         }
     }
 
-    bool VideoGenerateSystem::initFFmpegContext(FFmpegContext* context, OutputConfig& config) {
+    bool VideoGenerateSystem::initFFmpegContext(FFmpegContext* context, OutputConfigComponent& config) {
         static constexpr auto kBitRate = 3000000;
         static constexpr auto kFrameRate = 24; // 24 fps
         static constexpr auto kPixelFormat = AV_PIX_FMT_YUV420P;
@@ -317,8 +314,6 @@ namespace render {
         if (!(context->outputFormatContext->flags & AVFMT_NOFILE)) {
             ret = avio_open(&context->outputFormatContext->pb, context->output.data(), AVIO_FLAG_WRITE);
             if (ret < 0) {
-                SkDebugf("Could not open %s: %s", context->output.c_str(),
-                         av_make_error_string(errorBuf, AV_ERROR_MAX_STRING_SIZE, ret));
                 return false;
             }
         }
@@ -600,7 +595,7 @@ namespace render {
 
         AVCodecContext* codecContext = outputVideoStream->codecContext;
 
-        AVPacket pkt = {nullptr};
+        AVPacket pkt;
         av_init_packet(&pkt); // Fixme: missing av_packet_free()
 
         // 时间戳相关，修改nextPts的值
