@@ -23,6 +23,7 @@ if (skia_use_ffmpeg) {
       "avcodec",
       "avformat",
       "avutil",
+      "swresample",
     ]
   }
 

@@ -2140,6 +2140,7 @@ if (skia_enable_tools) {
         "tools/render/MainRender.cpp",
         "tools/render/RenderSystem.cpp",
         "tools/render/Engine.cpp",
+        "tools/render/AudioFifo.cpp",
         "tools/render/VideoGenerateSystem.cpp",
         "tools/render/ImageOutputSystem.cpp",
       ]
