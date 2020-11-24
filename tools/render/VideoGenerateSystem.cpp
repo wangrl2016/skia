@@ -192,13 +192,13 @@ namespace render {
         context->output = config.outputPath;
         if (context->output.empty()) context->output = "out/sink/video.mp4";
 
-        SkDebugf("Output media file name %s", context->output.c_str());
+        printf("Output media file name %s\n", context->output.c_str());
 
         context->width = config.outputSize.width();
         context->height = config.outputSize.height();
 
         std::string audioPath = config.audioInput.filePath;
-        SkDebugf("Input audio file path %s", audioPath.c_str());
+        SkDebugf("Input audio file path %s\n", audioPath.c_str());
         // init input audio FFmpeg parameter, using it parameter to init audio output
         if (audioPath.empty() ||
             (initInputConfig(audioPath.c_str(), &context->inputAudioFormatContext, &context->inputAudioCodecContext,
@@ -320,13 +320,13 @@ namespace render {
 
         // Initialize the FIFO buffer to store audio samples to be encoded.
         if (context->haveAudio && initAudioFifo(&context->audioFifo, context->outputAudioStream.codecContext)) {
-            SkDebugf("Could not allocate audio FIFO");
+            printf("Could not allocate audio FIFO\n");
         }
 
         // Write the stream header, if any.
         ret = avformat_write_header(context->outputFormatContext.get(), &context->options);
         if (ret < 0) {
-            SkDebugf("Error occurred when opening output file: {}",
+            printf("Error occurred when opening output file: %s\n",
                      av_make_error_string(errorBuf, AV_ERROR_MAX_STRING_SIZE, ret));
             return false;
         }
@@ -571,10 +571,28 @@ namespace render {
         // create the FIFO buffer based on the specified output sample format
         if (!(*fifo = av_audio_fifo_alloc(outputCodecContext->sample_fmt,
                                           outputCodecContext->channels, 1))) {
-            SkDebugf("Could not allocate FIFO");
+            printf("Could not allocate FIFO\n");
             return AVERROR(ENOMEM);
         }
         return 0;
+    }
+
+    static void logPacket(const AVFormatContext* formatContext, const AVPacket* pkt) {
+        AVRational* time_base = &formatContext->streams[pkt->stream_index]->time_base;
+
+        char ptsBuf[AV_TS_MAX_STRING_SIZE];
+        char ptsTimeBuf[AV_TS_MAX_STRING_SIZE];
+        char dtsBuf[AV_TS_MAX_STRING_SIZE];
+        char dtsTimeBuf[AV_TS_MAX_STRING_SIZE];
+        char durationBuf[AV_TS_MAX_STRING_SIZE];
+        char durationTimeBuf[AV_TS_MAX_STRING_SIZE];
+
+        printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
+               av_ts_make_string(ptsBuf, pkt->pts), av_ts_make_time_string(ptsTimeBuf, pkt->dts, time_base),
+               av_ts_make_string(dtsBuf, pkt->dts), av_ts_make_time_string(dtsTimeBuf, pkt->dts, time_base),
+               av_ts_make_string(durationBuf, pkt->duration),
+               av_ts_make_time_string(durationTimeBuf, pkt->duration, time_base),
+               pkt->stream_index);
     }
 
     int
@@ -585,7 +603,7 @@ namespace render {
         av_packet_rescale_ts(packet, *timeBase, stream->time_base);
         packet->stream_index = stream->index;
         // write the compressed frame to the media file
-        // logPacket(outputFormatContext, packet);
+        logPacket(outputFormatContext, packet);
         return av_interleaved_write_frame(outputFormatContext, packet);
     }
 
@@ -643,7 +661,7 @@ namespace render {
                                                      codecContext,
                                                      outputStream->codecContext,
                                                      outputStream->swrContext, &finished)) {
-                SkDebugf("Read decode convert and store fail");
+                printf("Read decode convert and store fail\n");
                 break;
             }
             // If we are at the end of the input file, we continue

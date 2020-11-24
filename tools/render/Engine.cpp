@@ -34,7 +34,19 @@ namespace render {
     }
 
     bool Engine::destroy() {
-        return false;
+        for (auto& sys : systems()) {
+            sys->finalize();
+        }
+
+        // Destroy all the system in the engine.
+        mSystems.erase(mSystems.begin(), mSystems.end());
+
+        // Destroy all the components in the engine.
+        reset();
+
+        printf("Engine shutting down...\n");
+
+        return true;
     }
 
     Engine::Engine() {

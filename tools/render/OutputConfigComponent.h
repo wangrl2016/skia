@@ -24,6 +24,10 @@ namespace render {
 
         }
 
+        OutputConfigComponent(SkISize size, std::string path) : outputSize(size), outputPath(path) {
+
+        }
+
         OutputConfigComponent(AudioInput input, SkISize size, std::string path) :
                 audioInput(input), outputSize(size), outputPath(path) {
 

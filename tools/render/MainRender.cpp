@@ -15,8 +15,9 @@
 #include "tools/render/Engine.h"
 #include "tools/render/AnimationComponent.h"
 #include "tools/render/RenderComponent.h"
-#include "tools/render/FFmpegComponent.h"
 #include "tools/render/OutputConfigComponent.h"
+#include "tools/render/FFmpegContext.h"
+#include "tools/render/AudioInput.h"
 
 static DEFINE_string2(input, i, "", "skottie animation to render");
 static DEFINE_string2(output, o, "", "mp4 file to create");
@@ -70,13 +71,18 @@ int main(int argc, char** argv) {
     auto entity = registry.create();
     registry.emplace<render::AnimationComponent>(entity, animation);
     registry.emplace<render::RenderComponent>(entity);
-    registry.emplace<render::FFmpegComponent>(entity);
-    registry.emplace<render::OutputConfigComponent>(entity);
+    registry.emplace<render::FFmpegContext>(entity);
+    registry.emplace<render::OutputConfigComponent>(entity,
+                                                    render::AudioInput(std::string("resources/symphony.mp3"), 0.0f,
+                                                                           0.0f),
+                                                    SkISize::Make(int(animation->size().width()),
+                                                                  int(animation->size().height())),
+                                                    std::string("out/out.mp4"));
 
     auto view = registry.view<render::AnimationComponent,
             render::RenderComponent>();
-    for (auto entity : view) {
-        auto& anim = view.get<render::AnimationComponent>(entity);
+    for (auto e : view) {
+        auto& anim = view.get<render::AnimationComponent>(e);
         anim.mFps = fps;
         SkDebugf("Animation duration %lfs\n", anim.getAnimation()->duration());
     }
