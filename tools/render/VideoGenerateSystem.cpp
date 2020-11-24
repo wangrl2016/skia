@@ -25,10 +25,6 @@ extern "C" {
 
 namespace render {
 
-    void VideoGenerateSystem::init() {
-        return;
-    }
-
     void VideoGenerateSystem::update() {
         auto& r = Engine::registry();
 
@@ -131,8 +127,6 @@ namespace render {
         auto& r = Engine::registry();
         auto componentsView = r.view<AnimationComponent, FFmpegContext, RenderComponent>();
         for (auto e : componentsView) {
-            auto& res = componentsView.get<AnimationComponent>(e);
-
             auto& context = componentsView.get<FFmpegContext>(e);
             // If the user break the FFmpeg video process, we don't need to write the rest frame to file.
             // Because the user may delete our file immediately, cause our writing core dump.

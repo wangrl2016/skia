@@ -21,7 +21,7 @@ namespace render {
 
             auto& surface = view.get<RenderComponent>(entity).mSurface;
             if (!surface) {
-                 surface = SkSurface::MakeRasterN32Premul(dim.width(), dim.height());
+                surface = SkSurface::MakeRasterN32Premul(dim.width(), dim.height());
                 SkDebugf("Use cpu surface to render\n");
             }
         }
@@ -46,10 +46,10 @@ namespace render {
                     animation.getAnimation()->seek(animation.mTimeOffset);
 
                     if (handleFrame(animation.getAnimation().get())) {
-                        auto& registry = Engine::registry();
-                        auto view = registry.view<RenderComponent>();
-                        for (auto entity : view) {
-                            auto& render = view.get<RenderComponent>(entity);
+                        auto& r = Engine::registry();
+                        auto v = r.view<RenderComponent>();
+                        for (auto e : v) {
+                            auto& render = v.get<RenderComponent>(e);
                             render.mImage = render.mSurface->makeImageSnapshot();
                             render.mFrameCount += 1;
                         }
@@ -87,4 +87,4 @@ namespace render {
         canvas->clear(SK_ColorTRANSPARENT);
         animation->render(canvas);
     }
-}
+}  // namespace render

@@ -38,7 +38,7 @@ namespace render {
                 *finished = 1;
             else {
                 printf("Could not read frame (error '%s')",
-                         av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
+                       av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
                 return error;
             }
         }
@@ -46,7 +46,7 @@ namespace render {
         // The input audio stream decoder is used to do this.
         if ((error = avcodec_send_packet(inputCodecContext, &inputPacket)) < 0) {
             printf("Could not send packet for decoding (error '%s')",
-                      av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
+                   av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
             return error;
         }
         // receive one frame from the decoder
@@ -63,7 +63,7 @@ namespace render {
             goto cleanup;
         } else if (error < 0) {
             printf("Could not decode frame (error '%s')",
-                      av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
+                   av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
             goto cleanup;
             // default case: Return decoded data
         } else {
@@ -95,7 +95,7 @@ namespace render {
                                       frameSize,
                                       outputCodecContext->sample_fmt, 0)) < 0) {
             printf("Could not allocate converted input samples (error '%s')",
-                      av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
+                   av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
             av_freep(&(*convertedInputSamples)[0]);
             free(*convertedInputSamples);
             return error;
@@ -112,7 +112,7 @@ namespace render {
                                  convertedData, frameSize,
                                  inputData, frameSize)) < 0) {
             printf("Could not convert input samples (error '%s')",
-                     av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
+                   av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
             return error;
         }
         return 0;
@@ -175,7 +175,6 @@ namespace render {
             if (addSamplesToFifo(fifo, convertedInputSamples,
                                  inputFrame->nb_samples))
                 goto cleanup;
-            ret = 0;
         }
         ret = 0;
         cleanup:
@@ -210,7 +209,7 @@ namespace render {
         // sure that the audio frame can hold as many samples as specified.
         if ((error = av_frame_get_buffer(*frame, 0)) < 0) {
             printf("Could not allocate output frame samples (error '%s')",
-                      av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
+                   av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
             av_frame_free(frame);
             return error;
         }
@@ -238,7 +237,7 @@ namespace render {
             goto cleanup;
         } else if (error < 0) {
             printf("Could not send packet for encoding (error '%s')",
-                      av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
+                   av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
             return error;
         }
         // receive one encoded frame from the encoder
@@ -254,19 +253,20 @@ namespace render {
             goto cleanup;
         } else if (error < 0) {
             printf("Could not encode frame (error '%s')",
-                      av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
+                   av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
             goto cleanup;
             // default case: Return encoded data
         } else {
             *dataPresent = 1;
         }
         outputPacket.stream_index = 1;
+        logPacket(outputFormatContext, &outputPacket);
 
         // write one audio frame from the temporary packet to the output file
         if (*dataPresent &&
             (error = av_interleaved_write_frame(outputFormatContext, &outputPacket)) < 0) {
             printf("Could not write frame (error '%s')",
-                      av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
+                   av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
             goto cleanup;
         }
         cleanup:

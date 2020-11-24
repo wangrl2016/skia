@@ -56,4 +56,4 @@ namespace render {
     Engine::~Engine() {
 
     }
-}
+}  // namespace render

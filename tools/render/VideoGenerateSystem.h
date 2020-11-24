@@ -15,7 +15,9 @@ namespace render {
 
         VideoGenerateSystem() = default;
 
-        void init() override;
+        void init() override {
+
+        }
 
         void update() override;
 
