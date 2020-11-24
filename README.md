@@ -99,3 +99,9 @@ or
 
 git rebase upstream/master
 ```
+
+切换python版本
+
+```
+update-alternatives --config python
+```
