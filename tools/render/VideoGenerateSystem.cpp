@@ -130,34 +130,31 @@ namespace render {
         // av_codec_close().
         auto& r = Engine::registry();
         auto componentsView = r.view<AnimationComponent, FFmpegContext, RenderComponent>();
-
         for (auto e : componentsView) {
             auto& res = componentsView.get<AnimationComponent>(e);
-            if (res.mState == AnimationComponent::State::STOP || res.mState == AnimationComponent::State::IDLE)
-                continue;
 
             auto& context = componentsView.get<FFmpegContext>(e);
-
             // If the user break the FFmpeg video process, we don't need to write the rest frame to file.
             // Because the user may delete our file immediately, cause our writing core dump.
             // When buffer is flushed the cycle will break.
             int ret;
-            AVPacket pkt;
+            AVPacket* pkt = av_packet_alloc();
             do {
                 // When the frame parameter is null the buffer will be flushed.
                 // General buffer flushing at end of stream.
                 avcodec_send_frame(context.outputVideoStream.codecContext, nullptr);
-                ret = avcodec_receive_packet(context.outputVideoStream.codecContext, &pkt);
+                ret = avcodec_receive_packet(context.outputVideoStream.codecContext, pkt);
                 if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF || ret < 0) {
                     break;
                 }
                 writeFrame(context.outputFormatContext.get(), &context.outputVideoStream.codecContext->time_base,
-                           context.outputVideoStream.stream, &pkt);
-                av_packet_unref(&pkt);
+                           context.outputVideoStream.stream, pkt);
+                av_packet_unref(pkt);
             } while (ret == 0);
 
-            if (context.isInited)
+            if (context.isInited) {
                 av_write_trailer(context.outputFormatContext.get());
+            }
 
             if (context.haveAudio) {
                 if (context.audioFifo)
@@ -205,7 +202,7 @@ namespace render {
                              AVMEDIA_TYPE_AUDIO) < 0)) {
             // just print warn message, a video can has not audio
             context->haveAudio = false;
-            SkDebugf("Init input audio FFmpeg parameters failed");
+            SkDebugf("Init input audio FFmpeg parameters failed\n");
         } else {
             context->haveAudio = true;
             AudioInput& audioInput = config.audioInput;
@@ -218,7 +215,7 @@ namespace render {
         AVFormatContext* formatContext;
         avformat_alloc_output_context2(&formatContext, nullptr, nullptr, context->output.data());
         if (!formatContext) {
-            SkDebugf("Could not deduce output format from file extension: using MPEG.");
+            SkDebugf("Could not deduce output format from file extension: using MPEG.\n");
             avformat_alloc_output_context2(&formatContext, nullptr, "mpeg", context->output.data());
         }
 
@@ -314,6 +311,7 @@ namespace render {
         if (!(context->outputFormatContext->flags & AVFMT_NOFILE)) {
             ret = avio_open(&context->outputFormatContext->pb, context->output.data(), AVIO_FLAG_WRITE);
             if (ret < 0) {
+                printf("Open output file failed\n");
                 return false;
             }
         }
@@ -327,10 +325,9 @@ namespace render {
         ret = avformat_write_header(context->outputFormatContext.get(), &context->options);
         if (ret < 0) {
             printf("Error occurred when opening output file: %s\n",
-                     av_make_error_string(errorBuf, AV_ERROR_MAX_STRING_SIZE, ret));
+                   av_make_error_string(errorBuf, AV_ERROR_MAX_STRING_SIZE, ret));
             return false;
         }
-
         return true;
     }
 
