@@ -14,6 +14,7 @@ extern "C" {
 #include <libavutil/timestamp.h>
 }
 
+#include "tools/render/Logger.h"
 #include "tools/render/AudioFifo.h"
 #include "tools/render/Engine.h"
 #include "tools/render/OutputConfigComponent.h"
@@ -479,8 +480,8 @@ namespace render {
         ret = avcodec_open2(codecContext, outputAudioStream->codec, &opt);
         av_dict_free(&opt);
         if (ret < 0)
-            SkDebugf("Could not open audio codec: {}",
-                     av_make_error_string(errorBuf, AV_ERROR_MAX_STRING_SIZE, ret));
+            printf("Could not open audio codec: %s",
+                   av_make_error_string(errorBuf, AV_ERROR_MAX_STRING_SIZE, ret));
 
         if (codecContext->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)
             nbSamples = 10000;
@@ -566,24 +567,6 @@ namespace render {
             return AVERROR(ENOMEM);
         }
         return 0;
-    }
-
-    static void logPacket(const AVFormatContext* formatContext, const AVPacket* pkt) {
-        AVRational* time_base = &formatContext->streams[pkt->stream_index]->time_base;
-
-        char ptsBuf[AV_TS_MAX_STRING_SIZE];
-        char ptsTimeBuf[AV_TS_MAX_STRING_SIZE];
-        char dtsBuf[AV_TS_MAX_STRING_SIZE];
-        char dtsTimeBuf[AV_TS_MAX_STRING_SIZE];
-        char durationBuf[AV_TS_MAX_STRING_SIZE];
-        char durationTimeBuf[AV_TS_MAX_STRING_SIZE];
-
-        printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
-               av_ts_make_string(ptsBuf, pkt->pts), av_ts_make_time_string(ptsTimeBuf, pkt->dts, time_base),
-               av_ts_make_string(dtsBuf, pkt->dts), av_ts_make_time_string(dtsTimeBuf, pkt->dts, time_base),
-               av_ts_make_string(durationBuf, pkt->duration),
-               av_ts_make_time_string(durationTimeBuf, pkt->duration, time_base),
-               pkt->stream_index);
     }
 
     int

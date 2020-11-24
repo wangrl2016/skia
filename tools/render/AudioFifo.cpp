@@ -4,6 +4,7 @@
 
 #include <cstdio>
 
+#include "tools/render/Logger.h"
 #include "tools/render/AudioFifo.h"
 
 namespace render {
@@ -90,7 +91,7 @@ namespace render {
 
         // Allocate memory for the samples of all channels in one consecutive
         // block for convenience.
-        if ((error = av_samples_alloc(*convertedInputSamples, NULL,
+        if ((error = av_samples_alloc(*convertedInputSamples, nullptr,
                                       outputCodecContext->channels,
                                       frameSize,
                                       outputCodecContext->sample_fmt, 0)) < 0) {
@@ -139,9 +140,9 @@ namespace render {
                                              AVCodecContext* inputCodecContext, AVCodecContext* outputCodecContext,
                                              SwrContext* resamplerContext, int* finished) {
         // temporary storage of the input samples of the frame read from the file
-        AVFrame* inputFrame = NULL;
+        AVFrame* inputFrame = nullptr;
         // temporary storage for the converted input samples
-        uint8_t** convertedInputSamples = NULL;
+        uint8_t** convertedInputSamples = nullptr;
         int dataPresent = 0;
         int ret = AVERROR_EXIT;
         // initialize temporary storage for one input frame

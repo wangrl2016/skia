@@ -72,12 +72,11 @@ int main(int argc, char** argv) {
     registry.emplace<render::AnimationComponent>(entity, animation);
     registry.emplace<render::RenderComponent>(entity);
     registry.emplace<render::FFmpegContext>(entity);
-    registry.emplace<render::OutputConfigComponent>(entity,
-                                                    render::AudioInput(std::string("resources/symphony.mp3"), 0.0f,
-                                                                       0.0f),
-                                                    SkISize::Make(int(animation->size().width()),
-                                                                  int(animation->size().height())),
-                                                    std::string("out/out.mp4"));
+    registry.emplace<render::OutputConfigComponent>(
+            entity,
+            render::AudioInput(std::string("resources/symphony.mp3"), 0.0f, 0.0f),
+            SkISize::Make(int(animation->size().width()), int(animation->size().height())),
+            std::string("out/out.mp4"));
 
     auto view = registry.view<render::AnimationComponent,
             render::RenderComponent>();
