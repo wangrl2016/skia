@@ -27,6 +27,14 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
+    auto svg_dom = SVGDOM::Builder()
+            .setFontManager(SkFontMgr::RefDefault())
+            .make(in);
+
+    if (!svg_dom) {
+        std::cerr << "Could not parse " << FLAGS_input[0] << "\n";
+        return EXIT_FAILURE;
+    }
 
 
     return EXIT_SUCCESS;

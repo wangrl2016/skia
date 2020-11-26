@@ -3,6 +3,8 @@ _include = get_path_info("include", "abspath")
 
 skia_svgif_public = [
   "$_include/SVGDOM.h",
+  "$_include/SVGIDMapper.h",
+  "$_include/SVGNode.h",
 ]
 
 skia_svgif_sources = [
