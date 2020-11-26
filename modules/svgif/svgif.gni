@@ -2,9 +2,9 @@ _src = get_path_info("src", "abspath")
 _include = get_path_info("include", "abspath")
 
 skia_svgif_public = [
-
+  "$_include/SVGDOM.h",
 ]
 
 skia_svgif_sources = [
-
+  "$_src/SVGDOM.cpp",
 ]
