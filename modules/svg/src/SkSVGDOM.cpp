@@ -22,6 +22,7 @@
 #include "modules/svg/include/SkSVGFeTurbulence.h"
 #include "modules/svg/include/SkSVGFilter.h"
 #include "modules/svg/include/SkSVGG.h"
+#include "modules/svg/include/SkSVGImage.h"
 #include "modules/svg/include/SkSVGLine.h"
 #include "modules/svg/include/SkSVGLinearGradient.h"
 #include "modules/svg/include/SkSVGNode.h"
@@ -416,7 +417,8 @@ void SkSVGDOM::render(SkCanvas* canvas) const {
     if (fRoot) {
         SkSVGLengthContext       lctx(fContainerSize);
         SkSVGPresentationContext pctx;
-        fRoot->render(SkSVGRenderContext(canvas, fFontMgr, fIDMapper, lctx, pctx, nullptr));
+        
+        fRoot->render(SkSVGRenderContext(canvas, fFontMgr, fResourceProvider, fIDMapper, lctx, pctx, nullptr));
     }
 }
 

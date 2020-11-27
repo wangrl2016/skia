@@ -29,17 +29,6 @@ namespace {
         const SkDOM::Type elemType = dom.getType(xmlNode);
         SkDebugf("Root node name %s, type %d\n", elem, elemType);
 
-        if (elemType == SkDOM::kText_Type) {    // 包含文字
-            SkASSERT(dom.countChildren(xmlNode) == 0);
-            // TODO: add type conversion helper to SkSVGNode
-            if (ctx.fParent->tag() == SVGTag::kText) {
-                static_cast<SVGText*>(ctx.fParent)->setText(SkString(dom.getName(xmlNode)));
-            }
-            return nullptr
-        }
-
-        SkASSERT(elemType == SkDOM::kElement_Type)
-
         return nullptr;
     }
 
