@@ -21,6 +21,7 @@ if (skia_enable_svg) {
     deps = [
       "../..:skia",
       "../skshaper",
+      "../skresources",
     ]
   }
 

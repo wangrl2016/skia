@@ -379,6 +379,11 @@ SkSVGDOM::Builder& SkSVGDOM::Builder::setFontManager(sk_sp<SkFontMgr> fmgr) {
     return *this;
 }
 
+SkSVGDOM::Builder& SkSVGDOM::Builder::setResourceProvider(sk_sp<ResourceProvider> rp) {
+    fResourceProvider = std::move(rp);
+    return *this;
+}
+
 sk_sp<SkSVGDOM> SkSVGDOM::Builder::make(SkStream& str) const {
     SkDOM xmlDom;
     if (!xmlDom.build(str)) {
@@ -394,12 +399,15 @@ sk_sp<SkSVGDOM> SkSVGDOM::Builder::make(SkStream& str) const {
     }
 
     return sk_sp<SkSVGDOM>(new SkSVGDOM(sk_sp<SkSVGSVG>(static_cast<SkSVGSVG*>(root.release())),
-                                        std::move(fFontMgr), std::move(mapper)));
+                                        std::move(fFontMgr),
+                                        std::move(fResourceProvider), std::move(mapper)));
 }
 
-SkSVGDOM::SkSVGDOM(sk_sp<SkSVGSVG> root, sk_sp<SkFontMgr> fmgr, SkSVGIDMapper&& mapper)
+SkSVGDOM::SkSVGDOM(sk_sp<SkSVGSVG> root, sk_sp<SkFontMgr> fmgr, sk_sp<ResourceProvider> rp,
+        SkSVGIDMapper&& mapper)
     : fRoot(std::move(root))
     , fFontMgr(std::move(fmgr))
+    , fResourceProvider(std::move(rp))
     , fIDMapper(std::move(mapper))
     , fContainerSize(fRoot->intrinsicSize(SkSVGLengthContext(SkSize::Make(0, 0))))
 {}

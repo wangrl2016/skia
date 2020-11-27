@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include "src/utils/SkOSPath.h"
 #include "include/core/SkMatrix.h"
 #include "include/core/SkStream.h"
 #include "include/core/SkSurface.h"
@@ -39,9 +40,12 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    SkString assetPath = SkOSPath::Dirname(FLAGS_input[0]);
+    SkDebugf("assetPath %s\n", assetPath.c_str());
 
     auto svg_dom = SkSVGDOM::Builder()
                         .setFontManager(SkFontMgr::RefDefault())
+                        .setResourceProvider(skresources::FileResourceProvider::Make(assetPath))
                         .make(in);
     if (!svg_dom) {
         std::cerr << "Could not parse " << FLAGS_input[0] << "\n";
