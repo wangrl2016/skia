@@ -4,6 +4,19 @@
 
 #pragma once
 
-class SVGNode : public SkRefCnt {
+enum class SVGTag {
+    kCircle,
 
+    kText,
+};
+
+class SVGNode : public SkRefCnt {
+public:
+    ~SVGNode() override;
+
+    SVGTag tag() const { return fTag; }
+
+private:
+
+    SVGTag fTag;
 };
