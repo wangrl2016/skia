@@ -133,6 +133,10 @@ public:
         return fFontMgr ? fFontMgr : SkFontMgr::RefDefault();
     }
 
+    sk_sp<skresources::ResourceProvider> resourceProvider() const {
+        return fResourceProvider ? fResourceProvider : nullptr;
+    }
+
 private:
     // Stack-only
     void* operator new(size_t)                               = delete;

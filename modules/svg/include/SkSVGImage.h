@@ -20,4 +20,9 @@ protected:
 private:
     using INHERITED = SkSVGTransformableNode;
 
+    SkSVGLength fX = SkSVGLength(0);
+    SkSVGLength fY = SkSVGLength(0);
+    SkSVGLength fWidth = SkSVGLength(0);
+    SkSVGLength fHeight = SkSVGLength(0);
+
 };
