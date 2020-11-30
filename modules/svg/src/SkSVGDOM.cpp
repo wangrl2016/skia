@@ -43,6 +43,7 @@
 
 namespace {
 
+// Internationalized Resource Identifiers
 bool SetIRIAttribute(const sk_sp<SkSVGNode>& node, SkSVGAttribute attr,
                       const char* stringValue) {
     auto parseResult = SkSVGAttributeParser::parse<SkSVGIRI>(stringValue);

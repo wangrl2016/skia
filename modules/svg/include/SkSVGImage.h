@@ -23,6 +23,8 @@ public:
 
     void setImageHeight(const SkSVGLength&);
 
+    void setLinkHref(const SkString&);
+
     SkPath onAsPath(const SkSVGRenderContext&) const override;
 
 protected:
@@ -39,5 +41,7 @@ private:
     SkSVGLength fY = SkSVGLength(0);
     SkSVGLength fWidth = SkSVGLength(0);
     SkSVGLength fHeight = SkSVGLength(0);
+
+    SkString fLinkHref = SkSVGStringType();
 
 };

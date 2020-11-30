@@ -32,6 +32,10 @@ void SkSVGImage::setImageHeight(const SkSVGLength& h) {
     fHeight = h;
 }
 
+void SkSVGImage::setLinkHref(const SkString& href) {
+    fLinkHref = href;
+}
+
 SkPath SkSVGImage::onAsPath(const SkSVGRenderContext&) const {
     return SkPath();
 }
@@ -56,6 +60,11 @@ void SkSVGImage::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
         case SkSVGAttribute::kHeight:
             if (const auto* ih = v.as<SkSVGLengthValue>()) {
                 this->setImageHeight(*ih);
+            }
+            break;
+        case SkSVGAttribute::kHref:
+            if (const auto* href = v.as<SkSVGStringValue>()) {
+                this->setLinkHref(*href);
             }
             break;
         default:

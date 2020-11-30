@@ -269,9 +269,10 @@ bool SkSVGAttributeParser::parse(SkSVGIRI* iri) {
     this->parseWSToken();
 
     // we only support local fragments
-    if (!this->parseExpectedStringToken("#")) {
-        return false;
-    }
+    // if (!this->parseExpectedStringToken("#")) {
+    //     SkDebugf("Only support local fragment\n");
+    //     return false;
+    // }
     const auto* start = fCurPos;
     this->advanceWhile([](char c) -> bool { return !is_eos(c) && c != ')'; });
     if (start == fCurPos) {
