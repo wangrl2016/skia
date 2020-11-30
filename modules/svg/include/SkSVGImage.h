@@ -28,6 +28,8 @@ public:
 protected:
     void onRender(const SkSVGRenderContext&) const final;
 
+    void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
+
 private:
     using INHERITED = SkSVGTransformableNode;
 

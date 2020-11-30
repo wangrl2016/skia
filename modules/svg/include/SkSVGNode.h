@@ -31,6 +31,7 @@ enum class SkSVGTag {
     kFeTurbulence,
     kFilter,
     kG,
+    kImage,
     kLine,
     kLinearGradient,
     kPath,
@@ -45,7 +46,6 @@ enum class SkSVGTag {
     kTextLiteral,
     kTSpan,
     kUse,
-    kImage
 };
 
 #define SVG_PRES_ATTR(attr_name, attr_type, attr_inherited)                  \
