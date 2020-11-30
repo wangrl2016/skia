@@ -1973,12 +1973,6 @@ if (skia_enable_tools) {
     }
   }
 
-  if (is_linux || is_mac) {
-    test_app("svgif_tool") {
-      deps = ["modules/svgif:tool"]
-    }
-  }
-
   test_app("make_skqp_model") {
     sources = [ "tools/skqp/make_skqp_model.cpp" ]
     deps = [ ":skia" ]
