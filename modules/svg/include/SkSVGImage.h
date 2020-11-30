@@ -12,13 +12,26 @@ public:
 
     void appendChild(sk_sp<SkSVGNode>) override;
 
-protected:
-    SkSVGImage(SkSVGTag);
+    static sk_sp<SkSVGImage> Make() { return sk_sp<SkSVGImage>(new SkSVGImage()); }
 
+    // 设置image标签的属性值
+    void setImageX(const SkSVGLength&);
+
+    void setImageY(const SkSVGLength&);
+
+    void setImageWidth(const SkSVGLength&);
+
+    void setImageHeight(const SkSVGLength&);
+
+    SkPath onAsPath(const SkSVGRenderContext&) const override;
+
+protected:
     void onRender(const SkSVGRenderContext&) const final;
 
 private:
     using INHERITED = SkSVGTransformableNode;
+
+    SkSVGImage();
 
     SkSVGLength fX = SkSVGLength(0);
     SkSVGLength fY = SkSVGLength(0);

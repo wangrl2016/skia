@@ -44,7 +44,8 @@ enum class SkSVGTag {
     kText,
     kTextLiteral,
     kTSpan,
-    kUse
+    kUse,
+    kImage
 };
 
 #define SVG_PRES_ATTR(attr_name, attr_type, attr_inherited)                  \
