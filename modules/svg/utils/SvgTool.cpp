@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <chrono>
 
 #include "src/utils/SkOSPath.h"
 #include "include/core/SkMatrix.h"
@@ -22,6 +23,11 @@ static DEFINE_int(width , 1024, "Output width.");
 static DEFINE_int(height, 1024, "Output height.");
 
 int main(int argc, char** argv) {
+    auto ms_since = [](auto start) {
+        const auto elapsed = std::chrono::steady_clock::now() - start;
+        return std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+    };
+
     CommandLineFlags::Parse(argc, argv);
 
     if (FLAGS_input.isEmpty() || FLAGS_output.isEmpty()) {
@@ -73,6 +79,8 @@ int main(int argc, char** argv) {
         std::cerr << "PNG encoding failed.\n";
         return 1;
     }
+
+    SkDebugf("SVG render time %gms\n", ms_since(std::chrono::steady_clock::now()));
 
     return 0;
 }
