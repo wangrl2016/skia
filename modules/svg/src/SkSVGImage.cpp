@@ -5,6 +5,8 @@
 #include "modules/svg/include/SkSVGRenderContext.h"
 #include "modules/svg/include/SkSVGImage.h"
 #include "modules/svg/include/SkSVGValue.h"
+#include "include/core/SkImage.h"
+#include "include/core/SkCanvas.h"
 
 SkSVGImage::SkSVGImage() : INHERITED(SkSVGTag::kImage) {}
 
@@ -13,23 +15,34 @@ void SkSVGImage::appendChild(sk_sp<SkSVGNode>) {
 }
 
 void SkSVGImage::onRender(const SkSVGRenderContext& ctx) const {
+    auto asset = ctx.resourceProvider()->loadImageAsset("", fLinkHref.c_str(), fLinkHref.c_str());
+    if (!asset) {
+        SkDebugf("Could not load image asset\n");
+    }
 
+    auto frame = asset->getFrame(0);
+
+    auto scaleX = fWidth / frame->bounds().width();
+    auto scaleY = fHeight / frame->bounds().height();
+
+    ctx.canvas()->scale(scaleX, scaleY);
+    ctx.canvas()->drawImage(frame, fX, fY);
 }
 
 void SkSVGImage::setImageX(const SkSVGLength& x) {
-    fX = x;
+    fX = x.value();
 }
 
 void SkSVGImage::setImageY(const SkSVGLength& y) {
-    fY = y;
+    fY = y.value();
 }
 
 void SkSVGImage::setImageWidth(const SkSVGLength& w) {
-    fWidth = w;
+    fWidth = w.value();
 }
 
 void SkSVGImage::setImageHeight(const SkSVGLength& h) {
-    fHeight = h;
+    fHeight = h.value();
 }
 
 void SkSVGImage::setLinkHref(const SkString& href) {

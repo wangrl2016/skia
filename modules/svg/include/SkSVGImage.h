@@ -37,10 +37,7 @@ private:
 
     SkSVGImage();
 
-    SkSVGLength fX = SkSVGLength(0);
-    SkSVGLength fY = SkSVGLength(0);
-    SkSVGLength fWidth = SkSVGLength(0);
-    SkSVGLength fHeight = SkSVGLength(0);
+    SkScalar fX, fY, fWidth, fHeight;
 
     SkString fLinkHref = SkSVGStringType();
 
