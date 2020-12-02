@@ -17,7 +17,8 @@ void SkSVGImage::appendChild(sk_sp<SkSVGNode>) {
 void SkSVGImage::onRender(const SkSVGRenderContext& ctx) const {
     auto asset = ctx.resourceProvider()->loadImageAsset("", fLinkHref.c_str(), fLinkHref.c_str());
     if (!asset) {
-        SkDebugf("Could not load image asset\n");
+        SkDebugf("Could not load image asset %s\n", fLinkHref.c_str());
+        return;
     }
 
     auto frame = asset->getFrame(0);
