@@ -21,13 +21,17 @@ void SkSVGImage::onRender(const SkSVGRenderContext& ctx) const {
         return;
     }
 
+    SkPaint paint;
+    paint.setAntiAlias(fAntiAlias);
+    paint.setFilterQuality(fQuality);
+
     auto frame = asset->getFrame(0);
 
     auto scaleX = fWidth / frame->bounds().width();
     auto scaleY = fHeight / frame->bounds().height();
 
     ctx.canvas()->scale(scaleX, scaleY);
-    ctx.canvas()->drawImage(frame, fX, fY);
+    ctx.canvas()->drawImage(frame, fX, fY, &paint);
 }
 
 void SkSVGImage::setImageX(const SkSVGLength& x) {

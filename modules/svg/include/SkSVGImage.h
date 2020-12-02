@@ -5,6 +5,7 @@
 #pragma once
 
 #include "modules/svg/include/SkSVGTransformableNode.h"
+#include "include/core/SkFilterQuality.h"
 
 class SkSVGImage final : public SkSVGTransformableNode {
 public:
@@ -38,7 +39,9 @@ private:
     SkSVGImage();
 
     SkScalar fX, fY, fWidth, fHeight;
-
     SkString fLinkHref = SkSVGStringType();
+
+    SkFilterQuality fQuality = kNone_SkFilterQuality;
+    bool            fAntiAlias = true;
 
 };

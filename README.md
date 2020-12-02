@@ -4,7 +4,10 @@ See full details, and build instructions, at https://skia.org.
 
 SVG2渲染库
 
+```
+https://www.w3.org/TR/SVG11/
 https://www.w3.org/TR/SVG2/
+```
 
 #### 编译Skia仓库
 
