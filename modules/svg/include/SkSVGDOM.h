@@ -52,6 +52,8 @@ public:
     const SkSize& containerSize() const;
     void setContainerSize(const SkSize&);
 
+    double fps() const { return fFPS; }
+
     // Returns the node with the given id, or nullptr if not found.
     sk_sp<SkSVGNode>* findNodeById(const char* id);
 
@@ -64,6 +66,8 @@ private:
     const sk_sp<SkFontMgr> fFontMgr;
     const sk_sp<ResourceProvider> fResourceProvider;
     const SkSVGIDMapper    fIDMapper;
+
+    const double           fFPS = 25.0;
 
     SkSize                 fContainerSize;
 };
