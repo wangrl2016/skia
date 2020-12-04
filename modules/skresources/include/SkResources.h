@@ -50,6 +50,8 @@ public:
      */
     virtual sk_sp<SkImage> getFrame(float t);
 
+    virtual float duration() const = 0;
+
     struct FrameData {
         // SkImage payload.
         sk_sp<SkImage>    image;
@@ -87,6 +89,8 @@ public:
     bool isMultiFrame() override;
 
     sk_sp<SkImage> getFrame(float t) override;
+
+    float duration() const override;
 
 private:
     explicit MultiFrameImageAsset(std::unique_ptr<SkAnimCodecPlayer>, bool predecode);

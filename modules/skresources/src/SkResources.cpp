@@ -74,6 +74,10 @@ private:
         return fWindow[0].frame;
     }
 
+    float duration() const override {
+        return fDecoder->duration();
+    }
+
     const std::unique_ptr<SkVideoDecoder> fDecoder;
 
     struct FrameRec {
@@ -171,6 +175,10 @@ sk_sp<SkImage> MultiFrameImageAsset::getFrame(float t) {
     }
 
     return fCachedFrame;
+}
+
+float MultiFrameImageAsset::duration() const {
+    return fPlayer->duration() / 1000.0f;
 }
 
 sk_sp<FileResourceProvider> FileResourceProvider::Make(SkString base_dir, bool predecode) {
