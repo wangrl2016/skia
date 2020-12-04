@@ -60,6 +60,8 @@ enum class SkSVGAttribute {
     kX,
     kX1, // <line>: first endpoint x
     kX2, // <line>: second endpoint x
+    kXmlns,
+    kXmlnsXlink,
     kY,
     kY1, // <line>: first endpoint y
     kY2, // <line>: second endpoint y

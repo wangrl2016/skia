@@ -249,6 +249,8 @@ SortedDictionaryEntry<AttrParseInfo> gAttributeParseInfo[] = {
     { "x1"                 , { SkSVGAttribute::kX1               , SetLengthAttribute       }},
     { "x2"                 , { SkSVGAttribute::kX2               , SetLengthAttribute       }},
     { "xlink:href"         , { SkSVGAttribute::kHref             , SetIRIAttribute          }},
+    { "xmlns"              , { SkSVGAttribute::kXmlns            , SetStringAttribute       }},
+    { "xmlns:xlink"        , { SkSVGAttribute::kXmlnsXlink       , SetStringAttribute       }},
     { "y"                  , { SkSVGAttribute::kY                , SetLengthAttribute       }},
     { "y1"                 , { SkSVGAttribute::kY1               , SetLengthAttribute       }},
     { "y2"                 , { SkSVGAttribute::kY2               , SetLengthAttribute       }},

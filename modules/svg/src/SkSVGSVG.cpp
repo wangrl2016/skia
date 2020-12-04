@@ -131,6 +131,10 @@ void SkSVGSVG::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
             this->setPreserveAspectRatio(*par);
         }
         break;
+    case SkSVGAttribute::kXmlns:
+    case SkSVGAttribute::kXmlnsXlink:
+        printf("xmlns\n");
+        break;
     default:
         this->INHERITED::onSetAttribute(attr, v);
     }
