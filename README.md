@@ -9,6 +9,15 @@ https://www.w3.org/TR/SVG11/
 https://www.w3.org/TR/SVG2/
 ```
 
+Lottie库
+
+```
+https://github.com/airbnb/lottie-android
+https://github.com/airbnb/lottie-ios
+# docs含有json的解释
+https://github.com/airbnb/lottie-web
+```
+
 #### 编译Skia仓库
 
 配置编译工具
