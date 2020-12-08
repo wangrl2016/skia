@@ -14,6 +14,7 @@ skia_svg_public = [
   "$_include/SkSVGClipPath.h",
   "$_include/SkSVGContainer.h",
   "$_include/SkSVGDefs.h",
+  "$_include/SkSVGDesc.h",
   "$_include/SkSVGDOM.h",
   "$_include/SkSVGEllipse.h",
   "$_include/SkSVGFe.h",
