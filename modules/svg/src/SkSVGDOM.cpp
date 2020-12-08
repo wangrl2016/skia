@@ -18,7 +18,11 @@
 #include "modules/svg/include/SkSVGEllipse.h"
 #include "modules/svg/include/SkSVGFeColorMatrix.h"
 #include "modules/svg/include/SkSVGFeComposite.h"
+<<<<<<< HEAD
 #include "modules/svg/include/SkSVGFeFlood.h"
+=======
+#include "modules/svg/include/SkSVGFeGaussianBlur.h"
+>>>>>>> 增加高斯模糊源文件
 #include "modules/svg/include/SkSVGFeTurbulence.h"
 #include "modules/svg/include/SkSVGFilter.h"
 #include "modules/svg/include/SkSVGG.h"
@@ -265,6 +269,7 @@ SortedDictionaryEntry<sk_sp<SkSVGNode>(*)()> gTagFactories[] = {
     { "feColorMatrix" , []() -> sk_sp<SkSVGNode> { return SkSVGFeColorMatrix::Make();  }},
     { "feComposite"   , []() -> sk_sp<SkSVGNode> { return SkSVGFeComposite::Make();    }},
     { "feFlood"       , []() -> sk_sp<SkSVGNode> { return SkSVGFeFlood::Make();        }},
+    { "feGaussianBlur", []() -> sk_sp<SkSVGNode> { return SkSVGFeGaussianBlur::Make(); }},
     { "feTurbulence"  , []() -> sk_sp<SkSVGNode> { return SkSVGFeTurbulence::Make();   }},
     { "filter"        , []() -> sk_sp<SkSVGNode> { return SkSVGFilter::Make();         }},
     { "g"             , []() -> sk_sp<SkSVGNode> { return SkSVGG::Make();              }},
