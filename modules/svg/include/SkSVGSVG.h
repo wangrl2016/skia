@@ -24,6 +24,9 @@ public:
     SVG_ATTR(Height             , SkSVGLength, SkSVGLength(100, SkSVGLength::Unit::kPercentage))
     SVG_ATTR(PreserveAspectRatio, SkSVGPreserveAspectRatio, SkSVGPreserveAspectRatio())
 
+    SVG_ATTR(Version            , SkSVGNumberType, 0.0f)
+    SVG_ATTR(Xmlns              , SkSVGStringType, SkString())
+
     // TODO: SVG_ATTR is not smart enough to handle SkTLazy<T>
     void setViewBox(const SkSVGViewBoxType&);
 

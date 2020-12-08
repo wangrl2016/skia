@@ -247,6 +247,7 @@ SortedDictionaryEntry<AttrParseInfo> gAttributeParseInfo[] = {
     { "style"              , { SkSVGAttribute::kUnknown          , SetStyleAttributes       }},
     { "text"               , { SkSVGAttribute::kText             , SetStringAttribute       }},
     { "transform"          , { SkSVGAttribute::kTransform        , SetTransformAttribute    }},
+    { "version"            , { SkSVGAttribute::kVersion          , SetStringAttribute       }},
     { "viewBox"            , { SkSVGAttribute::kViewBox          , SetViewBoxAttribute      }},
     { "width"              , { SkSVGAttribute::kWidth            , SetLengthAttribute       }},
     { "x"                  , { SkSVGAttribute::kX                , SetLengthAttribute       }},

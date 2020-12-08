@@ -54,6 +54,7 @@ enum class SkSVGAttribute {
     kTransform,
     kText,
     kTextAnchor,
+    kVersion,
     kViewBox,
     kVisibility,
     kWidth,

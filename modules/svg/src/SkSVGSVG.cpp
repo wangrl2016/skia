@@ -121,6 +121,11 @@ void SkSVGSVG::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
             this->setHeight(*h);
         }
         break;
+    case SkSVGAttribute::kVersion:
+        if (const auto* version = v.as<SkSVGNumberValue>()) {
+            this->setVersion(*version);
+        }
+        break;
     case SkSVGAttribute::kViewBox:
         if (const auto* vb = v.as<SkSVGViewBoxValue>()) {
             this->setViewBox(*vb);
@@ -132,8 +137,12 @@ void SkSVGSVG::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
         }
         break;
     case SkSVGAttribute::kXmlns:
+        if (const auto* xmlns = v.as<SkSVGStringValue>()) {
+            this->setXmlns(*xmlns);
+        }
+        break;
     case SkSVGAttribute::kXmlnsXlink:
-        printf("xmlns\n");
+        printf("xmlns:xlink\n");
         break;
     default:
         this->INHERITED::onSetAttribute(attr, v);
