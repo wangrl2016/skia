@@ -29,6 +29,8 @@ static DEFINE_bool2(gpu, g, false, "use GPU for rendering");
 
 
 int main(int argc, char** argv) {
+    auto start = clock();
+
     SkGraphics::Init();
 
     CommandLineFlags::SetUsage("Converts skottie to a mp4");
@@ -96,6 +98,8 @@ int main(int argc, char** argv) {
 
     // 引擎销毁
     engine.destroy();
+
+    printf("MP4 render time %fs\n", (float) (clock() - start) / CLOCKS_PER_SEC);
 
     return 0;
 }
