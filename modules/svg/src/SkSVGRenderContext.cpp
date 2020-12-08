@@ -366,7 +366,7 @@ SkSVGRenderContext::SkSVGRenderContext(const SkSVGRenderContext& other, const Sk
                          *other.fLengthContext,
                          *other.fPresentationContext,
                          node) {}
-
+                         
 SkSVGRenderContext::~SkSVGRenderContext() {
     fCanvas->restoreToCount(fCanvasSaveCount);
 }
