@@ -1,0 +1,26 @@
+{
+  "v": "4.6.9",
+  "fr": 25,
+  "ip": 0,
+  "op": 200,
+  "w": 800,
+  "h": 600,
+  "nm": "Audio 1 Sample",
+  "ddd": 0,
+  "assets": [
+    {
+      "id": "audio_0",
+      "p": "symphony.mp3",
+      "u": "audios/"
+    }
+  ],
+  "layers": [
+    {
+      "ddd": 0,
+      "ty": 6,
+      "refId": "audio_0",
+      "ip": 50,
+      "op": 200
+    }
+  ]
+}
