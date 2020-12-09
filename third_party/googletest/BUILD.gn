@@ -1,0 +1,5 @@
+import("../third_party.gni")
+
+third_party("googletest") {
+    public_include_dirs = [ "../externals/googletest/googletest" ]
+}

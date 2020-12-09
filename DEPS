@@ -44,7 +44,8 @@ deps = {
   #"third_party/externals/v8"              : "https://chromium.googlesource.com/v8/v8.git@5f1ae66d5634e43563b2d25ea652dfb94c31a3b4",
   "third_party/externals/wuffs"           : "https://skia.googlesource.com/external/github.com/google/wuffs.git@00cc8a50aa0c86b6bcb37e9ece8fb100047cc17b",
   "third_party/externals/zlib"            : "https://chromium.googlesource.com/chromium/src/third_party/zlib@eaf99a4e2009b0e5759e6070ad1760ac1dd75461",
-  "third_party/externals/entt"            : "https://github.com/skypjack/entt@9d72472114c310cb55c25dec14e11fda6503d33c",
+  "third_party/externals/entt"            : "https://github.com/skypjack/entt@d980a5cf44fdc8f96074fe6741a407608768e273",
+  "third_party/externals/googletest"      : "https://github.com/google/googletest@e5644f5f12ff3d5b2232dabc1c5ea272a52e8155",
 
   "../src": {
     "url": "https://chromium.googlesource.com/chromium/src.git@f936dc21b927190009b878ea66402acc1ca97fb7",
