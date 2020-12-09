@@ -1,0 +1,5 @@
+import("../../gn/skia.gni")
+
+source_set("tool") {
+    sources = [ "src/PhotoEditor.cpp" ]
+}

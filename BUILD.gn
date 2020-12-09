@@ -1971,6 +1971,9 @@ if (skia_enable_tools) {
     test_app("svg_tool") {
       deps = [ "modules/svg:tool" ]
     }
+    test_app("photo_editor") {
+      deps = ["modules/photoeditor:tool"]
+    }
   }
 
   test_app("make_skqp_model") {
