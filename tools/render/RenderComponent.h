@@ -16,6 +16,13 @@ namespace render {
 
         int mFrameCount = 0;
 
+        bool mUseGPU = false;
+        GrDirectContext* context = nullptr;
+
         RenderComponent() {}
+
+        RenderComponent(bool gpu) : mUseGPU(gpu) {}
+
+
     };
 }

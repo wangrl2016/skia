@@ -2,6 +2,7 @@
 // Created by wangrl on 2020/9/18.
 //
 
+#include "tools/gpu/GrContextFactory.h"
 #include "tools/render/RenderSystem.h"
 #include "tools/render/Engine.h"
 #include "tools/render/AnimationComponent.h"
@@ -20,9 +21,28 @@ namespace render {
             SkISize dim = animation.getAnimation()->size().toRound();
 
             auto& surface = view.get<RenderComponent>(entity).mSurface;
+            if (view.get<RenderComponent>(entity).mUseGPU) {
+                const auto info = SkImageInfo::MakeN32Premul(dim);
+                auto contextType = sk_gpu_test::GrContextFactory::kGL_ContextType;
+                GrContextOptions grCtxOptions;
+                sk_gpu_test::GrContextFactory factory(grCtxOptions);
+                view.get<RenderComponent>(entity).context = factory.getContextInfo(contextType).directContext();
+                surface = SkSurface::MakeRenderTarget(view.get<RenderComponent>(entity).context,
+                                                   SkBudgeted::kNo,
+                                                   info,
+                                                   0,
+                                                   GrSurfaceOrigin::kTopLeft_GrSurfaceOrigin,
+                                                   nullptr);
+                if (!surface) {
+                    view.get<RenderComponent>(entity).context = nullptr;
+                } else {
+                    printf("Use GPU surface to render\n");
+                }
+            }
+
             if (!surface) {
                 surface = SkSurface::MakeRasterN32Premul(dim.width(), dim.height());
-                SkDebugf("Use cpu surface to render\n");
+                SkDebugf("Use CPU surface to render\n");
             }
         }
     }
@@ -50,7 +70,11 @@ namespace render {
                         auto v = r.view<RenderComponent>();
                         for (auto e : v) {
                             auto& render = v.get<RenderComponent>(e);
-                            render.mImage = render.mSurface->makeImageSnapshot();
+                            if (view.get<RenderComponent>(entity).context) {
+                                // TODO: need ref skottie2movie.cpp file implementation.
+                            } else {
+                                render.mImage = render.mSurface->makeImageSnapshot();
+                            }
                             render.mFrameCount += 1;
                         }
                     }

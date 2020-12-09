@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
     auto& registry = engine.registry();
     auto entity = registry.create();
     registry.emplace<render::AnimationComponent>(entity, animation);
-    registry.emplace<render::RenderComponent>(entity);
+    registry.emplace<render::RenderComponent>(entity, FLAGS_gpu);
     registry.emplace<render::FFmpegContext>(entity);
     registry.emplace<render::OutputConfigComponent>(
             entity,
