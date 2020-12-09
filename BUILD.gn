@@ -1247,6 +1247,7 @@ component("skia") {
   public += skia_utils_public
   public += skia_effects_public
   public += skia_effects_imagefilter_public
+  public += blink_public
 
   sources = []
   sources += skia_core_sources
@@ -1254,6 +1255,7 @@ component("skia") {
   sources += skia_effects_sources
   sources += skia_effects_imagefilter_sources
   sources += skia_sksl_sources
+  sources += blink_sources
   sources += [
     "src/android/SkAndroidFrameworkUtils.cpp",
     "src/android/SkAnimatedImage.cpp",

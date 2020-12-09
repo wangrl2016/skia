@@ -6,6 +6,7 @@
 # Things are easiest for everyone if these source paths are absolute.
 _src = get_path_info("../src", "abspath")
 _include = get_path_info("../include", "abspath")
+_blink = get_path_info("../blink", "abspath")
 
 skia_core_public = [
   "$_include/core/SkAnnotation.h",
@@ -585,3 +586,9 @@ skia_core_public += skia_pathops_public
 skia_core_public += skia_skpicture_public
 
 skia_core_defines = []  #  Used to be used by Chromium, but no longer.
+
+blink_public = [
+  "$_blink/wtf/Compile.h",
+]
+
+blink_sources = []

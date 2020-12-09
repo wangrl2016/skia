@@ -18,6 +18,12 @@ https://github.com/airbnb/lottie-ios
 https://github.com/airbnb/lottie-web
 ```
 
+Blink项目
+
+```
+https://chromium.googlesource.com/chromium/blink/
+```
+
 #### 编译Skia仓库
 
 配置编译工具
