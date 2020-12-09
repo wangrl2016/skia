@@ -45,35 +45,13 @@ namespace render {
                 context.isInited = initFFmpegContext(&context, config);
 
             sk_sp<SkImage> image = componentsView.get<RenderComponent>(e).mImage;
-
-            SkColorType colorType = image->colorType();
-            // pixel encode format
-            AVPixelFormat avPixelFormat;
-            switch (colorType) {
-                case kBGRA_8888_SkColorType:
-                    avPixelFormat = AV_PIX_FMT_BGRA;
-                    break;
-                case kRGBA_8888_SkColorType:
-                    avPixelFormat = AV_PIX_FMT_RGBA;
-                    break;
-                default:
-                    SkDebugf("Unsupported color type: %d", colorType);
-                    return;
-            }
-
             SkPixmap pixmap;
             if (image->peekPixels(&pixmap)) {
-                // const uint32_t* pixels = pixmap.addr32();
-                const uint8_t* pixels = reinterpret_cast<const uint8_t*>(pixmap.addr32());
-
-                // convert to YUV420P
-                const int lineSize[1] = {4 * context.outputVideoStream.codecContext->width};
-
                 if (!context.outputVideoStream.swsContext) {
                     context.outputVideoStream.swsContext = sws_getContext(
                             context.outputVideoStream.codecContext->width,
                             context.outputVideoStream.codecContext->height,
-                            avPixelFormat,
+                            kN32_SkColorType == kRGBA_8888_SkColorType ? AV_PIX_FMT_RGBA : AV_PIX_FMT_BGRA,
                             context.outputVideoStream.codecContext->width,
                             context.outputVideoStream.codecContext->height,
                             AV_PIX_FMT_YUV420P,
@@ -84,9 +62,11 @@ namespace render {
                     );
                 }
 
+                const uint8_t* pixels[] = { (const uint8_t*)pixmap.addr() };
+                const int strides[] = {SkToInt(pixmap.rowBytes())};
                 sws_scale(context.outputVideoStream.swsContext,
-                          &pixels,
-                          lineSize,
+                          pixels,
+                          strides,
                           0,
                           context.outputVideoStream.codecContext->height,
                           context.outputVideoStream.frame->data,

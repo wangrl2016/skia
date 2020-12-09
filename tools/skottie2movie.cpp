@@ -42,6 +42,7 @@ struct AsyncRec {
 };
 
 int main(int argc, char** argv) {
+    auto start = clock();
     SkGraphics::Init();
 
     CommandLineFlags::SetUsage("Converts skottie to a mp4");
@@ -174,5 +175,6 @@ int main(int argc, char** argv) {
         return -1;
     }
     ostream.write(data->data(), data->size());
+    printf("MP4 render time %fs\n", (float) (clock() - start) / CLOCKS_PER_SEC);
     return 0;
 }
