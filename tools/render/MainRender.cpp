@@ -20,7 +20,7 @@
 #include "tools/render/AudioInput.h"
 
 static DEFINE_string2(input, i, "", "skottie animation to render");
-static DEFINE_string2(output, o, "", "mp4 file to create");
+static DEFINE_string2(output, o, "out.mp4", "mp4 file to create");
 static DEFINE_string2(assetPath, a, "", "path to assets needed for json file");
 static DEFINE_int_2(fps, f, 25, "fps");
 static DEFINE_bool2(verbose, v, false, "verbose mode");
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
             entity,
             render::AudioInput(std::string("resources/symphony.mp3"), 0.0f, 0.0f),
             SkISize::Make(int(animation->size().width()), int(animation->size().height())),
-            std::string("out/out.mp4"));
+            FLAGS_output[0]);
 
     auto view = registry.view<render::AnimationComponent,
             render::RenderComponent>();

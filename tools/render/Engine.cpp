@@ -13,9 +13,8 @@ namespace render {
         reset();
 
         mSystems.emplace_back(new RenderSystem);
-        mSystems.emplace_back(new ImageOutputSystem);
         // 增加图像输出测试系统
-        // mSystems.emplace_back(new VideoGenerateSystem);
+        // mSystems.emplace_back(new ImageOutputSystem);
         mSystems.emplace_back(new VideoGenerateSystem);
 
         for (auto& sys : systems()) {

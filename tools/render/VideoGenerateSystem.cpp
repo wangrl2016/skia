@@ -30,7 +30,8 @@ namespace render {
         auto& r = Engine::registry();
 
         // Skip if there were any errors when loading animation.
-        auto componentsView = r.view<AnimationComponent, OutputConfigComponent, FFmpegContext, RenderComponent>();
+        auto componentsView = r.view<AnimationComponent, OutputConfigComponent,
+                FFmpegContext, RenderComponent>();
         for (auto e: componentsView) {
             auto& res = componentsView.get<AnimationComponent>(e);
             if (res.mState == AnimationComponent::State::STOP ||
@@ -337,7 +338,7 @@ namespace render {
 
         // open the input media file to read FFmpeg info
         if ((error = avformat_open_input(inputFormatContext, filename, nullptr, nullptr)) < 0) {
-            SkDebugf("Could not open input file '%s' (error '%s')", filename,
+            SkDebugf("Could not open input file '%s' (error '%s')\n", filename,
                      av_make_error_string(errBuf, AV_ERROR_MAX_STRING_SIZE, error));
             *inputFormatContext = nullptr;
             return error;
