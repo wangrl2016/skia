@@ -587,8 +587,6 @@ skia_core_public += skia_skpicture_public
 
 skia_core_defines = []  #  Used to be used by Chromium, but no longer.
 
-blink_public = [
-  "$_blink/wtf/Compile.h",
-]
+blink_public = []
 
 blink_sources = []
