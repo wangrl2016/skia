@@ -20,11 +20,8 @@ skia_svg_public = [
   "$_include/SkSVGFe.h",
   "$_include/SkSVGFeColorMatrix.h",
   "$_include/SkSVGFeComposite.h",
-<<<<<<< HEAD
   "$_include/SkSVGFeFlood.h",
-=======
   "$_include/SkSVGFeGaussianBlur.h",
->>>>>>> 增加高斯模糊源文件
   "$_include/SkSVGFeTurbulence.h",
   "$_include/SkSVGFilter.h",
   "$_include/SkSVGFilterContext.h",

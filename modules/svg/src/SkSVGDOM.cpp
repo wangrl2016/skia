@@ -19,11 +19,8 @@
 #include "modules/svg/include/SkSVGEllipse.h"
 #include "modules/svg/include/SkSVGFeColorMatrix.h"
 #include "modules/svg/include/SkSVGFeComposite.h"
-<<<<<<< HEAD
 #include "modules/svg/include/SkSVGFeFlood.h"
-=======
 #include "modules/svg/include/SkSVGFeGaussianBlur.h"
->>>>>>> 增加高斯模糊源文件
 #include "modules/svg/include/SkSVGFeTurbulence.h"
 #include "modules/svg/include/SkSVGFilter.h"
 #include "modules/svg/include/SkSVGG.h"
@@ -432,7 +429,7 @@ void SkSVGDOM::render(SkCanvas* canvas) const {
         SkSVGPresentationContext pctx;
 
         fRoot->render(SkSVGRenderContext(canvas, fFontMgr, fResourceProvider,
-                fIDMapper, lctx, pctx, nullptr, nullptr));
+                fIDMapper, lctx, pctx, nullptr));
     }
 }
 

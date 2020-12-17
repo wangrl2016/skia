@@ -13,3 +13,7 @@ SkSVGFeGaussianBlur::onMakeImageFilter(const SkSVGRenderContext&, const SkSVGFil
 bool SkSVGFeGaussianBlur::parseAndSetAttribute(const char*, const char*) {
     return false;
 }
+
+std::vector<SkSVGFeInputType> SkSVGFeGaussianBlur::getInputs() const {
+    return std::vector<SkSVGFeInputType>();
+}

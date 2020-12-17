@@ -19,6 +19,8 @@ protected:
 
     bool parseAndSetAttribute(const char*, const char*) override;
 
+    std::vector<SkSVGFeInputType> getInputs() const override;
+
 private:
     SkSVGFeGaussianBlur() : INHERITED(SkSVGTag::kFeGaussianBlur) {}
 
