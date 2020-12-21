@@ -2,11 +2,13 @@ import("../../gn/skia.gni")
 
 source_set("tool") {
     check_includes = false
+    testonly = true
     configs += [ "../..:skia_private" ]
 
     sources = [ "src/PhotoEditor.cpp" ]
 
     deps = [
         "../..:skia",
+        "../../:sk_app",
     ]
 }
