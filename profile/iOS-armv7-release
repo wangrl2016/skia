@@ -1,0 +1,8 @@
+[settings]
+os=iOS
+os.version=10.0
+arch=armv7
+build_type=Release
+compiler=apple-clang
+compiler.libcxx=libc++
+compiler.version=10.0

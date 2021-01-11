@@ -1,0 +1,14 @@
+include(default)
+[settings]
+arch=armv8
+build_type=Release
+compiler=clang
+compiler.libcxx=libc++
+compiler.version=9
+os=Android
+os.api_level=21
+[build_requires]
+[options]
+[env]
+# 指定Android NDK的目录
+ANDROID_NDK_ROOT=~/Android/Sdk/ndk/21.1.6352462

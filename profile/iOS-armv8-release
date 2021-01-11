@@ -1,0 +1,15 @@
+[settings]
+os=iOS
+os.version=10.0
+arch=armv8
+build_type=Release
+compiler=apple-clang
+compiler.libcxx=libc++
+compiler.version=10.0
+
+[build_requires]
+darwin-toolchain/1.0.1@edge/testing
+
+[options]
+darwin-toolchain:bitcode=False
+

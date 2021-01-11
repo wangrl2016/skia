@@ -1,0 +1,15 @@
+[settings]
+
+# we are building in ubuntu
+os_build=Linux
+arch_build=x86_64
+
+# target platform
+os=Linux
+arch=x86_64
+
+# adjust gcc version
+compiler=gcc
+compiler.version=7
+compiler.libcxx=libstdc++11
+build_type=Release
