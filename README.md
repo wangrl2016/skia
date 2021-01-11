@@ -111,6 +111,20 @@ conan create . user/stable --profile profile/Linux-x86_64-release --build missin
 conan create . user/stable --profile profile/Android-armv8-release --build missing
 ```
 
+#### 打包Android AAR库文件
+
+示范步骤，相关代码在 `android/` 目录中。
+
+1. 修改 `build.gradle` 文件，使Android工程能够找到c/c++库和CMakeLists.txt文件。
+
+2. 将c/c++库放入到 `libs` 目录，将头文件放置到 `include` 目录。
+
+3. 编写java层的接口供app调用。
+
+4. 编写JNI程序调用c/c++库。
+
+5. 打包生成AAR库文件。
+
 
 #### 同步google远程仓库
 
