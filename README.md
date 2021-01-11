@@ -71,6 +71,47 @@ or
 bin/gn gen out/config --ide=json --json-ide-script=../../gn/gn_to_cmake.py
 ```
 
+#### 使用跨平台Conan工具
+
+安装conan
+
+```
+pip3 install conan
+source ~/.profile
+```
+
+查看远程仓库
+
+```
+conan remote list
+```
+
+配置仓库
+
+```
+conan-center: https://conan.bintray.com [Verify SSL: True]
+upload_repo: https://api.bintray.com/conan/bincrafters/public-conan [Verify SSL: True]
+conan-community: https://api.bintray.com/conan/conan-community/conan [Verify SSL: True]
+nonstd-lite: https://api.bintray.com/conan/martinmoene/nonstd-lite [Verify SSL: True]
+```
+
+```
+conan remote add upload_repo https://api.bintray.com/conan/bincrafters/public-conan [Verify SSL: True]
+```
+
+生成Linux包
+
+```
+conan create . user/stable --profile profile/Linux-x86_64-release --build missing
+```
+
+生成Android包
+
+```
+conan create . user/stable --profile profile/Android-armv8-release --build missing
+```
+
+
 #### 同步google远程仓库
 
 查看配置的远程仓库
