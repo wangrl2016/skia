@@ -64,17 +64,24 @@ CompositionBuilder::CompositionBuilder(const AnimationBuilder& abuilder,
     // Prepare layer builders.
     if (const skjson::ArrayValue* jlayers = jcomp["layers"]) {
         fLayerBuilders.reserve(SkToInt(jlayers->size()));
+        SkDebugf("Layers size %d\n", SkToInt(jlayers->size()));
         for (const skjson::ObjectValue* jlayer : *jlayers) {
             if (!jlayer) continue;
+            SkDebugf("Layer name %s\n", (*jlayer)["nm"].toString().c_str());
 
             const auto  lbuilder_index = fLayerBuilders.size();
+            // fLayerBuilders.push_back(LayerBuilder(*jlayer, fSize));
+            SkDebugf("Layer size %.0fx%.0f\n", fSize.width(), fSize.height());
             fLayerBuilders.emplace_back(*jlayer, fSize);
+
+            // last element
             const auto& lbuilder = fLayerBuilders.back();
 
             fLayerIndexMap.set(lbuilder.index(), lbuilder_index);
 
             // Keep track of the camera builder.
             if (lbuilder.isCamera()) {
+                SkDebugf("Camera LayerBuilder\n");
                 // We only support one (first) camera for now.
                 if (camera_builder_index < 0) {
                     camera_builder_index = SkToInt(lbuilder_index);
@@ -112,6 +119,7 @@ LayerBuilder* CompositionBuilder::layerBuilder(int layer_index) {
 }
 
 sk_sp<sksg::RenderNode> CompositionBuilder::build(const AnimationBuilder& abuilder) {
+    SkDebugf("CompositionBuilder build\n");
     // First pass - transitively attach layer transform chains.
     for (auto& lbuilder : fLayerBuilders) {
         lbuilder.buildTransform(abuilder, this);

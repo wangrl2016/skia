@@ -377,6 +377,7 @@ sk_sp<sksg::Transform> LayerBuilder::getParentTransform(const AnimationBuilder& 
 sk_sp<sksg::Transform> LayerBuilder::doAttachTransform(const AnimationBuilder& abuilder,
                                                        CompositionBuilder* cbuilder,
                                                        TransformType ttype) {
+    SkDebugf("LayerBuilder::doAttachTransform\n");
     const skjson::ObjectValue* jtransform = fJlayer["ks"];
     if (!jtransform) {
         return nullptr;
@@ -410,6 +411,7 @@ bool LayerBuilder::hasMotionBlur(const CompositionBuilder* cbuilder) const {
 sk_sp<sksg::RenderNode> LayerBuilder::buildRenderTree(const AnimationBuilder& abuilder,
                                                       CompositionBuilder* cbuilder,
                                                       const LayerBuilder* prev_layer) {
+    SkDebugf("LayerBuilder::buildRenderTree\n");
     const AnimationBuilder::AutoPropertyTracker apt(&abuilder, fJlayer);
 
     using LayerBuilder =
@@ -453,6 +455,7 @@ sk_sp<sksg::RenderNode> LayerBuilder::buildRenderTree(const AnimationBuilder& ab
         return nullptr;
     }
 
+    SkDebugf("Layer type %d\n", type);
     const auto& build_info = gLayerBuildInfo[type];
 
     // Switch to the layer animator scope (which at this point holds transform-only animators).
