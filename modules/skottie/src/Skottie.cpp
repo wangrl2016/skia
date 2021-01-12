@@ -184,6 +184,7 @@ AnimationBuilder::AnimationInfo AnimationBuilder::parse(const skjson::ObjectValu
     this->parseFonts(jroot["fonts"], jroot["chars"]);
 
     AutoScope ascope(this);
+    SkDebugf("AnimationBuilder::parse\n");
     auto root = CompositionBuilder(*this, fCompSize, jroot).build(*this);
 
     auto animators = ascope.release();
@@ -193,12 +194,14 @@ AnimationBuilder::AnimationInfo AnimationBuilder::parse(const skjson::ObjectValu
 }
 
 void AnimationBuilder::parseAssets(const skjson::ArrayValue* jassets) {
+    SkDebugf("AnimationBuilder::parseAssets\n");
     if (!jassets) {
         return;
     }
 
     for (const skjson::ObjectValue* asset : *jassets) {
         if (asset) {
+            SkDebugf("Asset id %s\n", (*asset)["id"].toString().c_str());
             fAssets.set(ParseDefault<SkString>((*asset)["id"], SkString()), { asset, false });
         }
     }
@@ -369,6 +372,7 @@ sk_sp<Animation> Animation::Builder::make(const char* data, size_t data_len) {
     fStats.fJsonSize = data_len;
     const auto t0 = std::chrono::steady_clock::now();
 
+    SkDebugf("Create skjson::DOM struct\n");
     const skjson::DOM dom(data, data_len);
     if (!dom.root().is<skjson::ObjectValue>()) {
         // TODO: more error info.

@@ -48,9 +48,10 @@ CompositionBuilder::CompositionBuilder(const AnimationBuilder& abuilder,
                                        const SkSize& size,
                                        const skjson::ObjectValue& jcomp)
     : fSize(size) {
-
+    SkDebugf("Construct CompositionBuilder class\n");
     // Optional motion blur params.
     if (const skjson::ObjectValue* jmb = jcomp["mb"]) {
+        SkDebugf("Get motion blur params\n");
         static constexpr size_t kMaxSamplesPerFrame = 64;
         fMotionBlurSamples = std::min(ParseDefault<size_t>((*jmb)["spf"], 1ul),
                                       kMaxSamplesPerFrame);
