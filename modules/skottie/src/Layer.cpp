@@ -24,6 +24,9 @@
 #include "modules/sksg/include/SkSGRenderNode.h"
 #include "modules/sksg/include/SkSGTransform.h"
 
+#include "include/core/SkSurface.h"
+#include "src/utils/SkOSPath.h"
+
 namespace skottie {
 namespace internal {
 
@@ -479,6 +482,25 @@ sk_sp<sksg::RenderNode> LayerBuilder::buildRenderTree(const AnimationBuilder& ab
 
     // Optional layer mask.
     layer = AttachMask(fJlayer["masksProperties"], &abuilder, std::move(layer));
+
+    if (type == 2) {
+        SkDebugf("Layer size %.0fx%.0f\n", w, h);
+        const auto info = SkImageInfo::MakeS32(int(w), int(h), kUnpremul_SkAlphaType);
+        sk_sp<SkSurface> surf = SkSurface::MakeRaster(info);
+        // surf->getCanvas()->clear(SK_ColorWHITE);
+
+        layer->revalidate(nullptr, SkMatrix::I());
+        layer->render(surf->getCanvas(), nullptr);
+
+        const auto filename = SkStringPrintf("%s.png",
+                fJlayer["nm"].toString().c_str());
+        SkFILEWStream stream(SkOSPath::Join("out", filename.c_str()).c_str());
+
+        auto image = surf->makeImageSnapshot()->encodeToData();
+
+        stream.write(image->data(), image->size());
+
+    }
 
     // Does the transform apply to effects also?
     // (AE quirk: it doesn't - except for solid layers)
