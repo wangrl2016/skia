@@ -163,6 +163,7 @@ sk_sp<sksg::RenderNode> AnimationBuilder::attachExternalPrecompLayer(
 
 sk_sp<sksg::RenderNode> AnimationBuilder::attachPrecompLayer(const skjson::ObjectValue& jlayer,
                                                              LayerInfo* layer_info) const {
+    SkDebugf("AnimationBuilder::attachPrecompLayer\n");
     sk_sp<TimeRemapper> time_remapper;
     if (const skjson::ObjectValue* jtm = jlayer["tm"]) {
         time_remapper = sk_make_sp<TimeRemapper>(*jtm, this, fFrameRate);
