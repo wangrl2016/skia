@@ -74,6 +74,7 @@ public:
         this->bind(abuilder, jmask["o"], fOpacity);
 
         if (this->bind(abuilder, jmask["f"], fFeather)) {
+            SkDebugf("Bind mask filter\n");
             fMaskFilter = sksg::BlurImageFilter::Make();
         }
     }
@@ -103,6 +104,7 @@ private:
         if (fMaskFilter) {
             // Close enough to AE.
             static constexpr SkScalar kFeatherToSigma = 0.38f;
+            SkDebugf("Set mask filter sigma %.0fx%.0f\n", fFeather.x, fFeather.y);
             fMaskFilter->setSigma({fFeather.x * kFeatherToSigma,
                                    fFeather.y * kFeatherToSigma});
         }
@@ -173,14 +175,25 @@ sk_sp<sksg::RenderNode> AttachMask(const skjson::ArrayValue* jmask,
             continue;
         }
 
+        SkDebugf("Mask path count %d\n", mask_path->getPath().countPoints());
+        int count = mask_path->getPath().countPoints();
+        for (int i = 0; i < count; i++) {
+            auto point = mask_path->getPath().getPoint(i);
+            SkDebugf("Point %d - %.0f %.0f\n", i, point.fX, point.fY);
+        }
+
         auto mask_blend_mode = mask_info->fBlendMode;
         auto mask_merge_mode = mask_info->fMergeMode;
         auto mask_inverted   = ParseDefault<bool>((*m)["inv"], false);
+
+        SkDebugf("Blend mode %d\n", mask_blend_mode);
+        SkDebugf("Merge mode %d\n", mask_merge_mode);
 
         if (mask_stack.empty()) {
             // First mask adjustments:
             //   - always draw in source mode
             //   - invert geometry if needed
+            SkDebugf("Mask stack is empty\n");
             mask_blend_mode = SkBlendMode::kSrc;
             mask_merge_mode = sksg::Merge::Mode::kMerge;
             mask_inverted   = mask_inverted != mask_info->fInvertGeometry;
