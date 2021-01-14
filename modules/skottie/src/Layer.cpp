@@ -92,6 +92,7 @@ public:
         mask = sksg::ImageFilterEffect::Make(std::move(mask), fMaskFilter);
 
         if (this->requires_isolation()) {
+            SkDebugf("Mask requires isolation\n");
             mask = sksg::LayerEffect::Make(std::move(mask), fBlendMode);
         }
 
@@ -256,6 +257,7 @@ sk_sp<sksg::RenderNode> AttachMask(const skjson::ArrayValue* jmask,
 
     // Complex masks (non-opaque or blurred) turn into a mask node stack.
     sk_sp<sksg::RenderNode> maskNode;
+    SkDebugf("Mask stack count %d\n", mask_stack.count());
     if (mask_stack.count() == 1) {
         // no group needed for single mask
         const auto rec = mask_stack.front();
@@ -269,6 +271,18 @@ sk_sp<sksg::RenderNode> AttachMask(const skjson::ArrayValue* jmask,
 
         maskNode = sksg::Group::Make(std::move(masks));
     }
+
+    const auto info = SkImageInfo::MakeS32(720, 1280, kUnpremul_SkAlphaType);
+    sk_sp<SkSurface> surf = SkSurface::MakeRaster(info);
+    // surf->getCanvas()->clear(SK_ColorWHITE);
+    childNode->revalidate(nullptr, SkMatrix::I());
+    childNode->render(surf->getCanvas(), nullptr);
+
+    const auto filename = "ORIGIN.png";
+    SkFILEWStream stream(SkOSPath::Join("out", filename).c_str());
+    auto image = surf->makeImageSnapshot()->encodeToData();
+
+    stream.write(image->data(), image->size());
 
     SkDebugf("MaskEffect make\n");
     return sksg::MaskEffect::Make(std::move(childNode), std::move(maskNode));

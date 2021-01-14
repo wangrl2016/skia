@@ -54,6 +54,7 @@ void MaskEffect::onRender(SkCanvas* canvas, const RenderContext* ctx) const {
 
         RenderContext mask_render_context;
         if (is_luma(fMaskMode)) {
+            SkDebugf("Is luma\n");
             mask_render_context.fColorFilter = SkLumaColorFilter::Make();
         }
 
