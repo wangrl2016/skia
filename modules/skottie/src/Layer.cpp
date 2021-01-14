@@ -95,6 +95,23 @@ public:
             mask = sksg::LayerEffect::Make(std::move(mask), fBlendMode);
         }
 
+        SkDebugf("Mask Adapter makeMask\n");
+
+        float w = 720, h = 1280;
+
+        const auto info = SkImageInfo::MakeS32(int(w), int(h), kUnpremul_SkAlphaType);
+        sk_sp<SkSurface> surf = SkSurface::MakeRaster(info);
+
+        mask->revalidate(nullptr, SkMatrix::I());
+        mask->render(surf->getCanvas(), nullptr);
+
+        const auto filename = "mask.png";
+        SkFILEWStream stream(SkOSPath::Join("out", filename).c_str());
+
+        auto image = surf->makeImageSnapshot()->encodeToData();
+
+        stream.write(image->data(), image->size());
+
         return mask;
     }
 
@@ -253,6 +270,7 @@ sk_sp<sksg::RenderNode> AttachMask(const skjson::ArrayValue* jmask,
         maskNode = sksg::Group::Make(std::move(masks));
     }
 
+    SkDebugf("MaskEffect make\n");
     return sksg::MaskEffect::Make(std::move(childNode), std::move(maskNode));
 }
 
