@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "modules/skresources/include/SkResources.h"
 #include "tools/sk_app/Window.h"
 #include "tools/sk_app/Application.h"
 
@@ -24,4 +25,8 @@ private:
     sk_app::Window::BackendType mBackendType;
 
     SkScalar mRotationAngle;
+
+    sk_sp<skresources::ResourceProvider> mResourceProvider;
+
+    sk_sp<skresources::ImageAsset> mSource;
 };

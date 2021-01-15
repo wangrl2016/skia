@@ -10,5 +10,6 @@ source_set("tool") {
     deps = [
         "../..:skia",
         "../../:sk_app",
+        "../skresources",
     ]
 }

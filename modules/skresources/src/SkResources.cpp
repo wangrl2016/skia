@@ -195,6 +195,7 @@ sk_sp<SkData> FileResourceProvider::load(const char resource_path[],
                                          const char resource_name[]) const {
     const auto full_dir  = SkOSPath::Join(fDir.c_str()    , resource_path),
                full_path = SkOSPath::Join(full_dir.c_str(), resource_name);
+    SkDebugf("Full asset path %s\n", full_path.c_str());
     return SkData::MakeFromFileName(full_path.c_str());
 }
 
