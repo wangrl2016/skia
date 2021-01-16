@@ -7,11 +7,9 @@
 
 #include "modules/skottie/src/Layer.h"
 
-#include "modules/skottie/src/Camera.h"
+#include "modules/skottie/src/Transform.h"
 #include "modules/skottie/src/Composition.h"
 #include "modules/skottie/src/SkottieJson.h"
-#include "modules/skottie/src/effects/Effects.h"
-#include "modules/skottie/src/effects/MotionBlurEffect.h"
 #include "modules/sksg/include/SkSGClipEffect.h"
 #include "modules/sksg/include/SkSGDraw.h"
 #include "modules/sksg/include/SkSGGroup.h"
@@ -330,24 +328,6 @@ private:
                                   fOut;
 };
 
-class MotionBlurController final : public Animator {
-public:
-    explicit MotionBlurController(sk_sp<MotionBlurEffect> mbe)
-        : fMotionBlurEffect(std::move(mbe)) {}
-
-protected:
-    // When motion blur is present, time ticks are not passed to layer animators
-    // but to the motion blur effect. The effect then drives the animators/scene-graph
-    // during reval and render phases.
-    StateChanged onSeek(float t) override {
-        fMotionBlurEffect->setT(t);
-        return true;
-    }
-
-private:
-    const sk_sp<MotionBlurEffect> fMotionBlurEffect;
-};
-
 } // namespace
 
 LayerBuilder::LayerBuilder(const skjson::ObjectValue& jlayer, const SkSize& comp_size)
@@ -361,18 +341,10 @@ LayerBuilder::LayerBuilder(const skjson::ObjectValue& jlayer, const SkSize& comp
             ParseDefault<float>(jlayer["op"], 0.0f)}
 {
 
-    if (this->isCamera() || ParseDefault<int>(jlayer["ddd"], 0)) {
-        fFlags |= Flags::kIs3D;
-    }
 }
 
 LayerBuilder::~LayerBuilder() = default;
 
-bool LayerBuilder::isCamera() const {
-    static constexpr int kCameraLayerType = 13;
-
-    return fType == kCameraLayerType;
-}
 
 sk_sp<sksg::Transform> LayerBuilder::buildTransform(const AnimationBuilder& abuilder,
                                                     CompositionBuilder* cbuilder) {
@@ -410,14 +382,6 @@ sk_sp<sksg::Transform> LayerBuilder::getParentTransform(const AnimationBuilder& 
         return parent_builder->getTransform(abuilder, cbuilder, ttype);
     }
 
-    if (ttype == TransformType::k3D) {
-        // During camera transform attachment, cbuilder->getCameraTransform() is null.
-        // This prevents camera->camera transform chain cycles.
-        SkASSERT(!this->isCamera() || !cbuilder->getCameraTransform());
-
-        // 3D transform chains are implicitly rooted onto the camera.
-        return cbuilder->getCameraTransform();
-    }
 
     return nullptr;
 }
@@ -433,27 +397,10 @@ sk_sp<sksg::Transform> LayerBuilder::doAttachTransform(const AnimationBuilder& a
 
     auto parent_transform = this->getParentTransform(abuilder, cbuilder, ttype);
 
-    if (this->isCamera()) {
-        // parent_transform applies to the camera itself => it pre-composes inverted to the
-        // camera/view/adapter transform.
-        //
-        //   T_camera' = T_camera x Inv(parent_transform)
-        //
-        return abuilder.attachCamera(fJlayer,
-                                     *jtransform,
-                                     sksg::Transform::MakeInverse(std::move(parent_transform)),
-                                     cbuilder->fSize);
-    }
 
     return this->is3D()
             ? abuilder.attachMatrix3D(*jtransform, std::move(parent_transform), fAutoOrient)
             : abuilder.attachMatrix2D(*jtransform, std::move(parent_transform), fAutoOrient);
-}
-
-bool LayerBuilder::hasMotionBlur(const CompositionBuilder* cbuilder) const {
-    return cbuilder->fMotionBlurSamples > 1
-        && cbuilder->fMotionBlurAngle   > 0
-        && ParseDefault(fJlayer["mb"], false);
 }
 
 sk_sp<sksg::RenderNode> LayerBuilder::buildRenderTree(const AnimationBuilder& abuilder,
@@ -481,21 +428,9 @@ sk_sp<sksg::RenderNode> LayerBuilder::buildRenderTree(const AnimationBuilder& ab
         LayerBuilder                      fBuilder;
         uint32_t                          fFlags;
     } gLayerBuildInfo[] = {
-        { &AnimationBuilder::attachPrecompLayer, kTransformEffects },  // 'ty':  0 -> precomp
-        { &AnimationBuilder::attachSolidLayer  , kTransformEffects },  // 'ty':  1 -> solid
+        {nullptr, 0 },  // 'ty':  0 -> precomp
+        {nullptr, 0 },  // 'ty':  1 -> solid
         { &AnimationBuilder::attachFootageLayer, kTransformEffects },  // 'ty':  2 -> image
-        { &AnimationBuilder::attachNullLayer   ,                 0 },  // 'ty':  3 -> null
-        { &AnimationBuilder::attachShapeLayer  ,                 0 },  // 'ty':  4 -> shape
-        { &AnimationBuilder::attachTextLayer   ,                 0 },  // 'ty':  5 -> text
-        { &AnimationBuilder::attachAudioLayer  ,        kForceSeek },  // 'ty':  6 -> audio
-        { nullptr                              ,                 0 },  // 'ty':  7 -> pholderVideo
-        { nullptr                              ,                 0 },  // 'ty':  8 -> imageSeq
-        { &AnimationBuilder::attachFootageLayer, kTransformEffects },  // 'ty':  9 -> video
-        { nullptr                              ,                 0 },  // 'ty': 10 -> pholderStill
-        { nullptr                              ,                 0 },  // 'ty': 11 -> guide
-        { nullptr                              ,                 0 },  // 'ty': 12 -> adjustment
-        { &AnimationBuilder::attachNullLayer   ,                 0 },  // 'ty': 13 -> camera
-        { nullptr                              ,                 0 },  // 'ty': 14 -> light
     };
 
     const auto type = SkToSizeT(fType);
@@ -546,46 +481,6 @@ sk_sp<sksg::RenderNode> LayerBuilder::buildRenderTree(const AnimationBuilder& ab
         stream.write(image->data(), image->size());
 
     }
-
-    // Does the transform apply to effects also?
-    // (AE quirk: it doesn't - except for solid layers)
-    const auto transform_effects = (build_info.fFlags & kTransformEffects);
-
-    // Attach the transform before effects, when needed.
-    if (fLayerTransform && !transform_effects) {
-        layer = sksg::TransformEffect::Make(std::move(layer), fLayerTransform);
-    }
-
-    // Optional layer effects.
-    if (const skjson::ArrayValue* jeffects = fJlayer["ef"]) {
-        layer = EffectBuilder(&abuilder, fInfo.fSize, cbuilder)
-                .attachEffects(*jeffects, std::move(layer));
-    }
-
-    // Attach the transform after effects, when needed.
-    if (fLayerTransform && transform_effects) {
-        layer = sksg::TransformEffect::Make(std::move(layer), std::move(fLayerTransform));
-    }
-
-    // Optional layer styles.
-    if (const skjson::ArrayValue* jstyles = fJlayer["sy"]) {
-        layer = EffectBuilder(&abuilder, fInfo.fSize, cbuilder)
-                .attachStyles(*jstyles, std::move(layer));
-    }
-
-    // Optional layer opacity.
-    // TODO: de-dupe this "ks" lookup with matrix above.
-    if (const skjson::ObjectValue* jtransform = fJlayer["ks"]) {
-        layer = abuilder.attachOpacity(*jtransform, std::move(layer));
-    }
-
-    // Stash the content tree in case it is needed for later mattes.
-    fContentTree = layer;
-    if (ParseDefault<bool>(fJlayer["hd"], false)) {
-        layer = nullptr;
-    }
-
-    const auto has_animators    = !abuilder.fCurrentAnimatorScope->empty();
     const auto force_seek_count = build_info.fFlags & kForceSeek
             ? abuilder.fCurrentAnimatorScope->size()
             : fTransformAnimatorCount;
@@ -596,43 +491,11 @@ sk_sp<sksg::RenderNode> LayerBuilder::buildRenderTree(const AnimationBuilder& ab
                                                              fInfo.fInPoint,
                                                              fInfo.fOutPoint);
 
-    // Optional motion blur.
-    if (layer && has_animators && this->hasMotionBlur(cbuilder)) {
-        // Wrap both the layer node and the controller.
-        auto motion_blur = MotionBlurEffect::Make(std::move(controller), std::move(layer),
-                                                  cbuilder->fMotionBlurSamples,
-                                                  cbuilder->fMotionBlurAngle,
-                                                  cbuilder->fMotionBlurPhase);
-        controller = sk_make_sp<MotionBlurController>(motion_blur);
-        layer = std::move(motion_blur);
-    }
-
     abuilder.fCurrentAnimatorScope->push_back(std::move(controller));
 
     if (ParseDefault<bool>(fJlayer["td"], false)) {
         // |layer| is a track matte.  We apply it as a mask to the next layer.
         return nullptr;
-    }
-
-    // Optional matte.
-    size_t matte_mode;
-    if (prev_layer && Parse(fJlayer["tt"], &matte_mode)) {
-        static constexpr sksg::MaskEffect::Mode gMatteModes[] = {
-            sksg::MaskEffect::Mode::kAlphaNormal, // tt: 1
-            sksg::MaskEffect::Mode::kAlphaInvert, // tt: 2
-            sksg::MaskEffect::Mode::kLumaNormal,  // tt: 3
-            sksg::MaskEffect::Mode::kLumaInvert,  // tt: 4
-        };
-
-        if (matte_mode > 0 && matte_mode <= SK_ARRAY_COUNT(gMatteModes)) {
-            // The current layer is masked with the previous layer *content*.
-            layer = sksg::MaskEffect::Make(std::move(layer),
-                                           prev_layer->fContentTree,
-                                           gMatteModes[matte_mode - 1]);
-        } else {
-            abuilder.log(Logger::Level::kError, nullptr,
-                         "Unknown track matte mode: %zu\n", matte_mode);
-        }
     }
 
     // Finally, attach an optional blend mode.

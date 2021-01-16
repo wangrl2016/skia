@@ -53,11 +53,6 @@ if (skia_enable_skottie) {
           "../..:tests_config",
         ]
         sources = [
-          "src/SkottieTest.cpp",
-          "tests/AudioLayer.cpp",
-          "tests/Image.cpp",
-          "tests/Keyframe.cpp",
-          "tests/Text.cpp",
         ]
 
         deps = [
@@ -94,24 +89,6 @@ if (skia_enable_skottie) {
         public_deps = [ ":skottie" ]
       }
 
-      source_set("tool") {
-        check_includes = false
-        testonly = true
-
-        configs += [ "../..:skia_private" ]
-        sources = [ "src/SkottieTool.cpp" ]
-
-        deps = [
-          "../..:flags",
-          "../..:skia",
-          "../../experimental/ffmpeg:video_encoder",
-        ]
-
-        public_deps = [
-          ":skottie",
-          ":utils",
-        ]
-      }
 
       source_set("gm") {
         check_includes = false

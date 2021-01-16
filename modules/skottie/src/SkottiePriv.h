@@ -171,7 +171,7 @@ public:
 
     bool dispatchColorProperty(const sk_sp<sksg::Color>&) const;
     bool dispatchOpacityProperty(const sk_sp<sksg::OpacityEffect>&) const;
-    bool dispatchTextProperty(const sk_sp<TextAdapter>&) const;
+    // bool dispatchTextProperty(const sk_sp<TextAdapter>&) const;
     bool dispatchTransformProperty(const sk_sp<TransformAdapter2D>&) const;
 
 private:
@@ -184,33 +184,16 @@ private:
     struct LayerInfo;
 
     void parseAssets(const skjson::ArrayValue*);
-    void parseFonts (const skjson::ObjectValue* jfonts,
-                     const skjson::ArrayValue* jchars);
 
-    // Return true iff all fonts were resolved.
-    bool resolveNativeTypefaces();
-    bool resolveEmbeddedTypefaces(const skjson::ArrayValue& jchars);
-
-    void dispatchMarkers(const skjson::ArrayValue*) const;
 
     sk_sp<sksg::RenderNode> attachBlendMode(const skjson::ObjectValue&,
                                             sk_sp<sksg::RenderNode>) const;
 
-    sk_sp<sksg::RenderNode> attachShape(const skjson::ArrayValue*, AttachShapeContext*,
-                                        bool suppress_draws = false) const;
     const FootageAssetInfo* loadFootageAsset(const skjson::ObjectValue&) const;
     sk_sp<sksg::RenderNode> attachFootageAsset(const skjson::ObjectValue&, LayerInfo*) const;
 
-    sk_sp<sksg::RenderNode> attachExternalPrecompLayer(const skjson::ObjectValue&,
-                                                       const LayerInfo&) const;
-
     sk_sp<sksg::RenderNode> attachFootageLayer(const skjson::ObjectValue&, LayerInfo*) const;
-    sk_sp<sksg::RenderNode> attachNullLayer   (const skjson::ObjectValue&, LayerInfo*) const;
-    sk_sp<sksg::RenderNode> attachPrecompLayer(const skjson::ObjectValue&, LayerInfo*) const;
-    sk_sp<sksg::RenderNode> attachShapeLayer  (const skjson::ObjectValue&, LayerInfo*) const;
-    sk_sp<sksg::RenderNode> attachSolidLayer  (const skjson::ObjectValue&, LayerInfo*) const;
-    sk_sp<sksg::RenderNode> attachTextLayer   (const skjson::ObjectValue&, LayerInfo*) const;
-    sk_sp<sksg::RenderNode> attachAudioLayer  (const skjson::ObjectValue&, LayerInfo*) const;
+
 
     // Delay resolving the fontmgr until it is actually needed.
     struct LazyResolveFontMgr {
@@ -280,7 +263,6 @@ private:
     };
 
     SkTHashMap<SkString, AssetInfo>                fAssets;
-    SkTHashMap<SkString, FontInfo>                 fFonts;
     mutable SkTHashMap<SkString, FootageAssetInfo> fImageAssetCache;
 
     using INHERITED = SkNoncopyable;

@@ -178,10 +178,8 @@ AnimationBuilder::AnimationBuilder(sk_sp<ResourceProvider> rp, sk_sp<SkFontMgr> 
     , fHasNontrivialBlending(false) {}
 
 AnimationBuilder::AnimationInfo AnimationBuilder::parse(const skjson::ObjectValue& jroot) {
-    this->dispatchMarkers(jroot["markers"]);
 
     this->parseAssets(jroot["assets"]);
-    this->parseFonts(jroot["fonts"], jroot["chars"]);
 
     AutoScope ascope(this);
     SkDebugf("AnimationBuilder::parse\n");
@@ -203,35 +201,6 @@ void AnimationBuilder::parseAssets(const skjson::ArrayValue* jassets) {
         if (asset) {
             SkDebugf("Asset id %s\n", (*asset)["id"].toString().c_str());
             fAssets.set(ParseDefault<SkString>((*asset)["id"], SkString()), { asset, false });
-        }
-    }
-}
-
-void AnimationBuilder::dispatchMarkers(const skjson::ArrayValue* jmarkers) const {
-    if (!fMarkerObserver || !jmarkers) {
-        return;
-    }
-
-    // For frame-number -> t conversions.
-    const auto frameRatio = 1 / (fFrameRate * fDuration);
-
-    for (const skjson::ObjectValue* m : *jmarkers) {
-        if (!m) continue;
-
-        const skjson::StringValue* name = (*m)["cm"];
-        const auto time = ParseDefault((*m)["tm"], -1.0f),
-               duration = ParseDefault((*m)["dr"], -1.0f);
-
-        if (name && time >= 0 && duration >= 0) {
-            fMarkerObserver->onMarker(
-                        name->begin(),
-                        // "tm" is in frames
-                        time * frameRatio,
-                        // ... as is "dr"
-                        (time + duration) * frameRatio
-            );
-        } else {
-            this->log(Logger::Level::kWarning, m, "Ignoring unexpected marker.");
         }
     }
 }
@@ -264,19 +233,19 @@ bool AnimationBuilder::dispatchOpacityProperty(const sk_sp<sksg::OpacityEffect>&
     return dispatched;
 }
 
-bool AnimationBuilder::dispatchTextProperty(const sk_sp<TextAdapter>& t) const {
-    bool dispatched = false;
-
-    if (fPropertyObserver) {
-        fPropertyObserver->onTextProperty(fPropertyObserverContext,
-            [&]() {
-                dispatched = true;
-                return std::make_unique<TextPropertyHandle>(t);
-            });
-    }
-
-    return dispatched;
-}
+//bool AnimationBuilder::dispatchTextProperty(const sk_sp<TextAdapter>& t) const {
+//    bool dispatched = false;
+//
+//    if (fPropertyObserver) {
+//        fPropertyObserver->onTextProperty(fPropertyObserverContext,
+//            [&]() {
+//                dispatched = true;
+//                return std::make_unique<TextPropertyHandle>(t);
+//            });
+//    }
+//
+//    return dispatched;
+//}
 
 bool AnimationBuilder::dispatchTransformProperty(const sk_sp<TransformAdapter2D>& t) const {
     bool dispatched = false;

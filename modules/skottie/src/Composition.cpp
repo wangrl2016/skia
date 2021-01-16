@@ -9,7 +9,7 @@
 
 #include "include/core/SkCanvas.h"
 #include "include/private/SkTPin.h"
-#include "modules/skottie/src/Camera.h"
+#include "modules/skottie/src/Transform.h"
 #include "modules/skottie/src/SkottieJson.h"
 #include "modules/skottie/src/SkottiePriv.h"
 #include "modules/sksg/include/SkSGGroup.h"
@@ -59,8 +59,6 @@ CompositionBuilder::CompositionBuilder(const AnimationBuilder& abuilder,
         fMotionBlurPhase = SkTPin(ParseDefault((*jmb)["sp"], 0.0f), -360.0f, 360.0f);
     }
 
-    int camera_builder_index = -1;
-
     // Prepare layer builders.
     if (const skjson::ArrayValue* jlayers = jcomp["layers"]) {
         fLayerBuilders.reserve(SkToInt(jlayers->size()));
@@ -79,29 +77,9 @@ CompositionBuilder::CompositionBuilder(const AnimationBuilder& abuilder,
 
             fLayerIndexMap.set(lbuilder.index(), lbuilder_index);
 
-            // Keep track of the camera builder.
-            if (lbuilder.isCamera()) {
-                SkDebugf("Camera LayerBuilder\n");
-                // We only support one (first) camera for now.
-                if (camera_builder_index < 0) {
-                    camera_builder_index = SkToInt(lbuilder_index);
-                } else {
-                    abuilder.log(Logger::Level::kWarning, jlayer,
-                                 "Ignoring duplicate camera layer.");
-                }
-            }
         }
     }
 
-    // Attach a camera transform upfront, if needed (required to build
-    // all other 3D transform chains).
-    if (camera_builder_index >= 0) {
-        // Explicit camera.
-        fCameraTransform = fLayerBuilders[camera_builder_index].buildTransform(abuilder, this);
-    } else if (ParseDefault<int>(jcomp["ddd"], 0)) {
-        // Default/implicit camera when 3D layers are present.
-        fCameraTransform = CameraAdaper::DefaultCameraTransform(fSize);
-    }
 }
 
 CompositionBuilder::~CompositionBuilder() = default;

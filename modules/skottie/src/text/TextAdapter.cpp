@@ -101,7 +101,7 @@ sk_sp<TextAdapter> TextAdapter::Make(const skjson::ObjectValue& jlayer,
         }
     }
 
-    abuilder->dispatchTextProperty(adapter);
+    // abuilder->dispatchTextProperty(adapter);
 
     return adapter;
 }
