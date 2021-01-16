@@ -226,7 +226,7 @@ sk_sp<skottie::ExternalLayer> ExternalAnimationPrecompInterceptor::onLoadPrecomp
     }
 
     auto anim = skottie::Animation::Builder()
-                    .setPrecompInterceptor(sk_ref_sp(this))
+                    // .setPrecompInterceptor(sk_ref_sp(this))
                     .make(static_cast<const char*>(data->data()), data->size());
 
     return anim ? sk_make_sp<ExternalAnimationLayer>(std::move(anim), size)

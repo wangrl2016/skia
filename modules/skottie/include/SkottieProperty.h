@@ -93,7 +93,6 @@ private:
 
 namespace internal {
 
-class TextAdapter;
 class TransformAdapter2D;
 
 } // namespace internal
@@ -102,8 +101,6 @@ using ColorPropertyHandle     = PropertyHandle<ColorPropertyValue,
                                                sksg::Color>;
 using OpacityPropertyHandle   = PropertyHandle<OpacityPropertyValue,
                                                sksg::OpacityEffect>;
-using TextPropertyHandle      = PropertyHandle<TextPropertyValue,
-                                               internal::TextAdapter>;
 using TransformPropertyHandle = PropertyHandle<TransformPropertyValue,
                                                internal::TransformAdapter2D>;
 
@@ -124,8 +121,6 @@ public:
                                      const LazyHandle<ColorPropertyHandle>&);
     virtual void onOpacityProperty  (const char node_name[],
                                      const LazyHandle<OpacityPropertyHandle>&);
-//    virtual void onTextProperty     (const char node_name[],
-//                                     const LazyHandle<TextPropertyHandle>&);
     virtual void onTransformProperty(const char node_name[],
                                      const LazyHandle<TransformPropertyHandle>&);
     virtual void onEnterNode(const char node_name[]);

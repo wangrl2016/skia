@@ -103,15 +103,10 @@ public:
         Builder& setLogger(sk_sp<Logger>);
 
 //        /**
-//         * Register a MarkerObserver with this builder.
+//         * Register a precomp layer interceptor.
+//         * This allows substituting precomp layers with custom/externally managed content.
 //         */
-//        Builder& setMarkerObserver(sk_sp<MarkerObserver>);
-
-        /**
-         * Register a precomp layer interceptor.
-         * This allows substituting precomp layers with custom/externally managed content.
-         */
-        Builder& setPrecompInterceptor(sk_sp<PrecompInterceptor>);
+//        Builder& setPrecompInterceptor(sk_sp<PrecompInterceptor>);
 
         /**
          * Animation factories.

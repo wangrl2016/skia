@@ -8,7 +8,6 @@
 #include "modules/skottie/include/SkottieProperty.h"
 
 #include "modules/skottie/src/Transform.h"
-#include "modules/skottie/src/text/TextAdapter.h"
 #include "modules/sksg/include/SkSGOpacityEffect.h"
 #include "modules/sksg/include/SkSGPaint.h"
 
@@ -76,18 +75,6 @@ void PropertyHandle<OpacityPropertyValue, sksg::OpacityEffect>::set(const Opacit
     fNode->setOpacity(o / 100);
 }
 
-template <>
-PropertyHandle<TextPropertyValue, internal::TextAdapter>::~PropertyHandle() {}
-
-template <>
-TextPropertyValue PropertyHandle<TextPropertyValue, internal::TextAdapter>::get() const {
-      return fNode->getText();
-}
-
-template<>
-void PropertyHandle<TextPropertyValue, internal::TextAdapter>::set(const TextPropertyValue& t) {
-      fNode->setText(t);
-}
 
 template <>
 PropertyHandle<TransformPropertyValue, internal::TransformAdapter2D>::~PropertyHandle() {}

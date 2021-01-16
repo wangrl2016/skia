@@ -43,8 +43,6 @@ skia_skottie_sources = [
   "$_src/text/RangeSelector.h",
   "$_src/text/SkottieShaper.cpp",
   "$_src/text/SkottieShaper.h",
-  "$_src/text/TextAdapter.cpp",
-  "$_src/text/TextAdapter.h",
   "$_src/text/TextAnimator.cpp",
   "$_src/text/TextAnimator.h",
   "$_src/text/TextValue.cpp",

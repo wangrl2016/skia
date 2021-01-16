@@ -248,11 +248,11 @@ Animation::Builder& Animation::Builder::setLogger(sk_sp<Logger> logger) {
 //    fMarkerObserver = std::move(mobserver);
 //    return *this;
 //}
-
-Animation::Builder& Animation::Builder::setPrecompInterceptor(sk_sp<PrecompInterceptor> pi) {
-    fPrecompInterceptor = std::move(pi);
-    return *this;
-}
+//
+//Animation::Builder& Animation::Builder::setPrecompInterceptor(sk_sp<PrecompInterceptor> pi) {
+//    fPrecompInterceptor = std::move(pi);
+//    return *this;
+//}
 
 sk_sp<Animation> Animation::Builder::make(SkStream* stream) {
     if (!stream->hasLength()) {
