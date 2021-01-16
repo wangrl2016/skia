@@ -154,8 +154,6 @@ private:
 
     sk_sp<ResourceProvider>    fResourceProvider;
     sk_sp<Logger>              fLogger;
-    // sk_sp<MarkerObserver>      fMarkerObserver;
-    sk_sp<PrecompInterceptor>  fPrecompInterceptor;
     Animation::Builder::Stats* fStats;
     const SkSize               fCompSize;
     const float                fDuration,

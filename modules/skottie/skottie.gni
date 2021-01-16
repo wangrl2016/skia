@@ -39,12 +39,4 @@ skia_skottie_sources = [
   "$_src/animator/VectorKeyframeAnimator.cpp",
   "$_src/animator/VectorKeyframeAnimator.h",
   "$_src/layers/FootageLayer.cpp",
-  "$_src/text/RangeSelector.cpp",
-  "$_src/text/RangeSelector.h",
-  "$_src/text/SkottieShaper.cpp",
-  "$_src/text/SkottieShaper.h",
-  "$_src/text/TextAnimator.cpp",
-  "$_src/text/TextAnimator.h",
-  "$_src/text/TextValue.cpp",
-  "$_src/text/TextValue.h",
 ]
