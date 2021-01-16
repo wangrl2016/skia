@@ -159,14 +159,14 @@ sk_sp<sksg::RenderNode> AnimationBuilder::attachBlendMode(const skjson::ObjectVa
 }
 
 AnimationBuilder::AnimationBuilder(sk_sp<ResourceProvider> rp, sk_sp<SkFontMgr> fontmgr,
-                                   sk_sp<PropertyObserver> pobserver, sk_sp<Logger> logger,
+                                    sk_sp<Logger> logger,
                                    sk_sp<MarkerObserver> mobserver, sk_sp<PrecompInterceptor> pi,
                                    Animation::Builder::Stats* stats,
                                    const SkSize& comp_size, float duration, float framerate,
                                    uint32_t flags)
     : fResourceProvider(std::move(rp))
     // , fLazyFontMgr(std::move(fontmgr))
-    , fPropertyObserver(std::move(pobserver))
+    // , fPropertyObserver(std::move(pobserver))
     , fLogger(std::move(logger))
     , fMarkerObserver(std::move(mobserver))
     , fPrecompInterceptor(std::move(pi))
@@ -208,13 +208,6 @@ void AnimationBuilder::parseAssets(const skjson::ArrayValue* jassets) {
 bool AnimationBuilder::dispatchColorProperty(const sk_sp<sksg::Color>& c) const {
     bool dispatched = false;
 
-    if (fPropertyObserver) {
-        fPropertyObserver->onColorProperty(fPropertyObserverContext,
-            [&]() {
-                dispatched = true;
-                return std::make_unique<ColorPropertyHandle>(c);
-            });
-    }
 
     return dispatched;
 }
@@ -222,13 +215,6 @@ bool AnimationBuilder::dispatchColorProperty(const sk_sp<sksg::Color>& c) const 
 bool AnimationBuilder::dispatchOpacityProperty(const sk_sp<sksg::OpacityEffect>& o) const {
     bool dispatched = false;
 
-    if (fPropertyObserver) {
-        fPropertyObserver->onOpacityProperty(fPropertyObserverContext,
-            [&]() {
-                dispatched = true;
-                return std::make_unique<OpacityPropertyHandle>(o);
-            });
-    }
 
     return dispatched;
 }
@@ -237,13 +223,6 @@ bool AnimationBuilder::dispatchOpacityProperty(const sk_sp<sksg::OpacityEffect>&
 bool AnimationBuilder::dispatchTransformProperty(const sk_sp<TransformAdapter2D>& t) const {
     bool dispatched = false;
 
-    if (fPropertyObserver) {
-        fPropertyObserver->onTransformProperty(fPropertyObserverContext,
-            [&]() {
-                dispatched = true;
-                return std::make_unique<TransformPropertyHandle>(t);
-            });
-    }
 
     return dispatched;
 }
@@ -349,7 +328,6 @@ sk_sp<Animation> Animation::Builder::make(const char* data, size_t data_len) {
 
     SkASSERT(resolvedProvider);
     internal::AnimationBuilder builder(std::move(resolvedProvider), fFontMgr,
-                                       std::move(fPropertyObserver),
                                        std::move(fLogger),
                                        std::move(fMarkerObserver),
                                        std::move(fPrecompInterceptor),
