@@ -24,7 +24,7 @@
 #include "modules/skottie/src/SkottiePriv.h"
 #include "modules/skottie/src/SkottieValue.h"
 #include "modules/skottie/src/Transform.h"
-#include "modules/skottie/src/text/TextAdapter.h"
+
 #include "modules/sksg/include/SkSGInvalidationController.h"
 #include "modules/sksg/include/SkSGOpacityEffect.h"
 #include "modules/sksg/include/SkSGPaint.h"
@@ -165,7 +165,7 @@ AnimationBuilder::AnimationBuilder(sk_sp<ResourceProvider> rp, sk_sp<SkFontMgr> 
                                    const SkSize& comp_size, float duration, float framerate,
                                    uint32_t flags)
     : fResourceProvider(std::move(rp))
-    , fLazyFontMgr(std::move(fontmgr))
+    // , fLazyFontMgr(std::move(fontmgr))
     , fPropertyObserver(std::move(pobserver))
     , fLogger(std::move(logger))
     , fMarkerObserver(std::move(mobserver))
@@ -233,19 +233,6 @@ bool AnimationBuilder::dispatchOpacityProperty(const sk_sp<sksg::OpacityEffect>&
     return dispatched;
 }
 
-//bool AnimationBuilder::dispatchTextProperty(const sk_sp<TextAdapter>& t) const {
-//    bool dispatched = false;
-//
-//    if (fPropertyObserver) {
-//        fPropertyObserver->onTextProperty(fPropertyObserverContext,
-//            [&]() {
-//                dispatched = true;
-//                return std::make_unique<TextPropertyHandle>(t);
-//            });
-//    }
-//
-//    return dispatched;
-//}
 
 bool AnimationBuilder::dispatchTransformProperty(const sk_sp<TransformAdapter2D>& t) const {
     bool dispatched = false;
@@ -261,13 +248,6 @@ bool AnimationBuilder::dispatchTransformProperty(const sk_sp<TransformAdapter2D>
     return dispatched;
 }
 
-void AnimationBuilder::AutoPropertyTracker::updateContext(PropertyObserver* observer,
-                                                          const skjson::ObjectValue& obj) {
-
-    const skjson::StringValue* name = obj["nm"];
-
-    fBuilder->fPropertyObserverContext = name ? name->begin() : nullptr;
-}
 
 } // namespace internal
 
@@ -281,15 +261,7 @@ Animation::Builder& Animation::Builder::setResourceProvider(sk_sp<ResourceProvid
     return *this;
 }
 
-Animation::Builder& Animation::Builder::setFontManager(sk_sp<SkFontMgr> fmgr) {
-    fFontMgr = std::move(fmgr);
-    return *this;
-}
 
-Animation::Builder& Animation::Builder::setPropertyObserver(sk_sp<PropertyObserver> pobserver) {
-    fPropertyObserver = std::move(pobserver);
-    return *this;
-}
 
 Animation::Builder& Animation::Builder::setLogger(sk_sp<Logger> logger) {
     fLogger = std::move(logger);

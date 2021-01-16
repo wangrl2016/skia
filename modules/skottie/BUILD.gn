@@ -99,8 +99,6 @@ if (skia_enable_skottie) {
 
         configs += [ "../..:skia_private" ]
         sources = [
-          "gm/ExternalProperties.cpp",
-          "gm/SkottieGM.cpp",
         ]
 
         deps = [

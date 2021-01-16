@@ -98,19 +98,6 @@ public:
         Builder& setResourceProvider(sk_sp<ResourceProvider>);
 
         /**
-         * Specify a font manager for loading animation fonts.
-         */
-        Builder& setFontManager(sk_sp<SkFontMgr>);
-
-        /**
-         * Specify a PropertyObserver to receive callbacks during parsing.
-         *
-         * See SkottieProperty.h for more details.
-         *
-         */
-        Builder& setPropertyObserver(sk_sp<PropertyObserver>);
-
-        /**
          * Register a Logger with this builder.
          */
         Builder& setLogger(sk_sp<Logger>);

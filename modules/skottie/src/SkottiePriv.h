@@ -43,7 +43,6 @@ namespace internal {
 // Close-enough to AE.
 static constexpr float kBlurSizeToSigma = 0.3f;
 
-class TextAdapter;
 class TransformAdapter2D;
 class TransformAdapter3D;
 
@@ -63,17 +62,6 @@ public:
 
     AnimationInfo parse(const skjson::ObjectValue&);
 
-    struct FontInfo {
-        SkString                fFamily,
-                                fStyle,
-                                fPath;
-        SkScalar                fAscentPct;
-        sk_sp<SkTypeface>       fTypeface;
-        SkCustomTypefaceBuilder fCustomBuilder;
-
-        bool matches(const char family[], const char style[]) const;
-    };
-    const FontInfo* findFont(const SkString& name) const;
 
     void log(Logger::Level, const skjson::Value*, const char fmt[], ...) const;
 
@@ -81,11 +69,6 @@ public:
                                           bool auto_orient = false) const;
     sk_sp<sksg::Transform> attachMatrix3D(const skjson::ObjectValue&, sk_sp<sksg::Transform>,
                                           bool auto_orient = false) const;
-
-    sk_sp<sksg::Transform> attachCamera(const skjson::ObjectValue& jlayer,
-                                        const skjson::ObjectValue& jtransform,
-                                        sk_sp<sksg::Transform>,
-                                        const SkSize&) const;
 
     sk_sp<sksg::RenderNode> attachOpacity(const skjson::ObjectValue&,
                                           sk_sp<sksg::RenderNode>) const;
@@ -144,42 +127,14 @@ public:
         return node;
     }
 
-    class AutoPropertyTracker {
-    public:
-        AutoPropertyTracker(const AnimationBuilder* builder, const skjson::ObjectValue& obj)
-            : fBuilder(builder)
-            , fPrevContext(builder->fPropertyObserverContext) {
-            if (fBuilder->fPropertyObserver) {
-                auto observer = builder->fPropertyObserver.get();
-                this->updateContext(observer, obj);
-                observer->onEnterNode(fBuilder->fPropertyObserverContext);
-            }
-        }
-
-        ~AutoPropertyTracker() {
-            if (fBuilder->fPropertyObserver) {
-                fBuilder->fPropertyObserver->onLeavingNode(fBuilder->fPropertyObserverContext);
-                fBuilder->fPropertyObserverContext = fPrevContext;
-            }
-        }
-    private:
-        void updateContext(PropertyObserver*, const skjson::ObjectValue&);
-
-        const AnimationBuilder* fBuilder;
-        const char*             fPrevContext;
-    };
-
     bool dispatchColorProperty(const sk_sp<sksg::Color>&) const;
     bool dispatchOpacityProperty(const sk_sp<sksg::OpacityEffect>&) const;
-    // bool dispatchTextProperty(const sk_sp<TextAdapter>&) const;
     bool dispatchTransformProperty(const sk_sp<TransformAdapter2D>&) const;
 
 private:
     friend class CompositionBuilder;
     friend class LayerBuilder;
 
-    struct AttachLayerContext;
-    struct AttachShapeContext;
     struct FootageAssetInfo;
     struct LayerInfo;
 
@@ -195,26 +150,7 @@ private:
     sk_sp<sksg::RenderNode> attachFootageLayer(const skjson::ObjectValue&, LayerInfo*) const;
 
 
-    // Delay resolving the fontmgr until it is actually needed.
-    struct LazyResolveFontMgr {
-        LazyResolveFontMgr(sk_sp<SkFontMgr> fontMgr) : fFontMgr(std::move(fontMgr)) {}
-
-        const sk_sp<SkFontMgr>& get() {
-            if (!fFontMgr) {
-                fFontMgr = SkFontMgr::RefDefault();
-                SkASSERT(fFontMgr);
-            }
-            return fFontMgr;
-        }
-
-        const sk_sp<SkFontMgr>& getMaybeNull() const { return fFontMgr; }
-
-    private:
-        sk_sp<SkFontMgr> fFontMgr;
-    };
-
     sk_sp<ResourceProvider>    fResourceProvider;
-    LazyResolveFontMgr         fLazyFontMgr;
     sk_sp<PropertyObserver>    fPropertyObserver;
     sk_sp<Logger>              fLogger;
     sk_sp<MarkerObserver>      fMarkerObserver;
