@@ -103,7 +103,7 @@ private:
     PropMap<skottie::ColorPropertyHandle>     fColorMap;
     PropMap<skottie::OpacityPropertyHandle>   fOpacityMap;
     PropMap<skottie::TransformPropertyHandle> fTransformMap;
-    PropMap<skottie::TextPropertyHandle>      fTextMap;
+    // PropMap<skottie::TextPropertyHandle>      fTextMap;
     std::vector<MarkerInfo>                   fMarkers;
     std::string                               fCurrentNode;
 };

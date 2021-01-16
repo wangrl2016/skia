@@ -50,8 +50,10 @@ using AnimatorScope = std::vector<sk_sp<Animator>>;
 
 class AnimationBuilder final : public SkNoncopyable {
 public:
-    AnimationBuilder(sk_sp<ResourceProvider>, sk_sp<SkFontMgr>,
-                     sk_sp<Logger>, sk_sp<MarkerObserver>, sk_sp<PrecompInterceptor>,
+    AnimationBuilder(sk_sp<ResourceProvider>,
+                     sk_sp<Logger>,
+                             // sk_sp<MarkerObserver>,
+                             // sk_sp<PrecompInterceptor>,
                      Animation::Builder::Stats*, const SkSize& comp_size,
                      float duration, float framerate, uint32_t flags);
 
@@ -152,7 +154,7 @@ private:
 
     sk_sp<ResourceProvider>    fResourceProvider;
     sk_sp<Logger>              fLogger;
-    sk_sp<MarkerObserver>      fMarkerObserver;
+    // sk_sp<MarkerObserver>      fMarkerObserver;
     sk_sp<PrecompInterceptor>  fPrecompInterceptor;
     Animation::Builder::Stats* fStats;
     const SkSize               fCompSize;

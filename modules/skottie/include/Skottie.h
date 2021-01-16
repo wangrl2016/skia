@@ -102,10 +102,10 @@ public:
          */
         Builder& setLogger(sk_sp<Logger>);
 
-        /**
-         * Register a MarkerObserver with this builder.
-         */
-        Builder& setMarkerObserver(sk_sp<MarkerObserver>);
+//        /**
+//         * Register a MarkerObserver with this builder.
+//         */
+//        Builder& setMarkerObserver(sk_sp<MarkerObserver>);
 
         /**
          * Register a precomp layer interceptor.
@@ -125,7 +125,7 @@ public:
 
         sk_sp<ResourceProvider>   fResourceProvider;
         sk_sp<SkFontMgr>          fFontMgr;
-        sk_sp<PropertyObserver>   fPropertyObserver;
+        // sk_sp<PropertyObserver>   fPropertyObserver;
         sk_sp<Logger>             fLogger;
         sk_sp<MarkerObserver  >   fMarkerObserver;
         sk_sp<PrecompInterceptor> fPrecompInterceptor;

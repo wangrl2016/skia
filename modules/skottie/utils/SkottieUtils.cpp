@@ -37,14 +37,6 @@ public:
         }
     }
 
-    void onTextProperty(const char node_name[],
-                        const LazyHandle<skottie::TextPropertyHandle>& t) override {
-        const auto key = fMgr->acceptKey(node_name, ".Text");
-        if (!key.empty()) {
-            fMgr->fTextMap[key].push_back(t());
-        }
-    }
-
     void onEnterNode(const char node_name[]) override {
         fMgr->fCurrentNode =
                 fMgr->fCurrentNode.empty() ? node_name : fMgr->fCurrentNode + "." + node_name;
@@ -179,18 +171,18 @@ bool CustomPropertyManager::setTransform(const PropKey& key,
     return this->set(key, t, fTransformMap);
 }
 
-std::vector<CustomPropertyManager::PropKey>
-CustomPropertyManager::getTextProps() const {
-    return this->getProps(fTextMap);
-}
-
-skottie::TextPropertyValue CustomPropertyManager::getText(const PropKey& key) const {
-    return this->get<skottie::TextPropertyValue>(key, fTextMap);
-}
-
-bool CustomPropertyManager::setText(const PropKey& key, const skottie::TextPropertyValue& o) {
-    return this->set(key, o, fTextMap);
-}
+//std::vector<CustomPropertyManager::PropKey>
+//CustomPropertyManager::getTextProps() const {
+//    return this->getProps(fTextMap);
+//}
+//
+//skottie::TextPropertyValue CustomPropertyManager::getText(const PropKey& key) const {
+//    return this->get<skottie::TextPropertyValue>(key, fTextMap);
+//}
+//
+//bool CustomPropertyManager::setText(const PropKey& key, const skottie::TextPropertyValue& o) {
+//    return this->set(key, o, fTextMap);
+//}
 
 namespace {
 

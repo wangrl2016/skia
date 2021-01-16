@@ -124,8 +124,8 @@ public:
                                      const LazyHandle<ColorPropertyHandle>&);
     virtual void onOpacityProperty  (const char node_name[],
                                      const LazyHandle<OpacityPropertyHandle>&);
-    virtual void onTextProperty     (const char node_name[],
-                                     const LazyHandle<TextPropertyHandle>&);
+//    virtual void onTextProperty     (const char node_name[],
+//                                     const LazyHandle<TextPropertyHandle>&);
     virtual void onTransformProperty(const char node_name[],
                                      const LazyHandle<TransformPropertyHandle>&);
     virtual void onEnterNode(const char node_name[]);

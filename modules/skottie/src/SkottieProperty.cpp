@@ -122,9 +122,6 @@ void PropertyObserver::onColorProperty(const char[],
 void PropertyObserver::onOpacityProperty(const char[],
                                          const LazyHandle<OpacityPropertyHandle>&) {}
 
-void PropertyObserver::onTextProperty(const char[],
-                                      const LazyHandle<TextPropertyHandle>&) {}
-
 void PropertyObserver::onTransformProperty(const char[],
                                            const LazyHandle<TransformPropertyHandle>&) {}
 

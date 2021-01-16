@@ -158,18 +158,15 @@ sk_sp<sksg::RenderNode> AnimationBuilder::attachBlendMode(const skjson::ObjectVa
     return child;
 }
 
-AnimationBuilder::AnimationBuilder(sk_sp<ResourceProvider> rp, sk_sp<SkFontMgr> fontmgr,
+AnimationBuilder::AnimationBuilder(sk_sp<ResourceProvider> rp,
                                     sk_sp<Logger> logger,
-                                   sk_sp<MarkerObserver> mobserver, sk_sp<PrecompInterceptor> pi,
+                                   // sk_sp<PrecompInterceptor> pi,
                                    Animation::Builder::Stats* stats,
                                    const SkSize& comp_size, float duration, float framerate,
                                    uint32_t flags)
     : fResourceProvider(std::move(rp))
-    // , fLazyFontMgr(std::move(fontmgr))
-    // , fPropertyObserver(std::move(pobserver))
     , fLogger(std::move(logger))
-    , fMarkerObserver(std::move(mobserver))
-    , fPrecompInterceptor(std::move(pi))
+    // , fPrecompInterceptor(std::move(pi))
     , fStats(stats)
     , fCompSize(comp_size)
     , fDuration(duration)
@@ -247,10 +244,10 @@ Animation::Builder& Animation::Builder::setLogger(sk_sp<Logger> logger) {
     return *this;
 }
 
-Animation::Builder& Animation::Builder::setMarkerObserver(sk_sp<MarkerObserver> mobserver) {
-    fMarkerObserver = std::move(mobserver);
-    return *this;
-}
+//Animation::Builder& Animation::Builder::setMarkerObserver(sk_sp<MarkerObserver> mobserver) {
+//    fMarkerObserver = std::move(mobserver);
+//    return *this;
+//}
 
 Animation::Builder& Animation::Builder::setPrecompInterceptor(sk_sp<PrecompInterceptor> pi) {
     fPrecompInterceptor = std::move(pi);
@@ -327,10 +324,9 @@ sk_sp<Animation> Animation::Builder::make(const char* data, size_t data_len) {
     }
 
     SkASSERT(resolvedProvider);
-    internal::AnimationBuilder builder(std::move(resolvedProvider), fFontMgr,
+    internal::AnimationBuilder builder(std::move(resolvedProvider),
                                        std::move(fLogger),
-                                       std::move(fMarkerObserver),
-                                       std::move(fPrecompInterceptor),
+                                       // std::move(fPrecompInterceptor),
                                        &fStats, size, duration, fps, fFlags);
     auto ainfo = builder.parse(json);
 
