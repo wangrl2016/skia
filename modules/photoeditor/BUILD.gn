@@ -11,5 +11,6 @@ source_set("tool") {
         "../..:skia",
         "../../:sk_app",
         "../skresources",
+        "../sksg",
     ]
 }

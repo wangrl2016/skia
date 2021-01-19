@@ -68,10 +68,13 @@ public:
         fMaskPaint->setAntiAlias(true);
         if (!this->requires_isolation()) {
             // We can mask at draw time.
+            SkDebugf("MaskAdapter requires isolation\n");
             fMaskPaint->setBlendMode(bm);
         }
 
         this->bind(abuilder, jmask["o"], fOpacity);
+
+        SkDebugf("Maks opacity %f\n", fOpacity);
 
         if (this->bind(abuilder, jmask["f"], fFeather)) {
             SkDebugf("Bind mask filter\n");
@@ -235,6 +238,7 @@ sk_sp<sksg::RenderNode> AttachMask(const skjson::ArrayValue* jmask,
         return childNode;
 
     // If the masks are fully opaque, we can clip.
+    SkDebugf("Has effect ? %d", has_effect);
     if (!has_effect) {
         sk_sp<sksg::GeometryNode> clip_node;
 
